@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Econ 10000: the full notes (lectures 1–4)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F8FA; --grid:#DFE8EF; --sheet:#FFFFFF; --rule:#D3DDE6;
+  --ink:#1E2B45; --ink-soft:#56627A;
+  --l1:#99640F; --l2:#0F7B6C; --l3:#4C51BF; --l4:#C53060; --hyp:#7A4CC2;
+  --focus:#F2B705;
+  --hand:'Caveat','Segoe Print','Bradley Hand',cursive;
+  --body:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    color-scheme:dark;
+    --paper:#152036; --grid:#1D2A44; --sheet:#1B2741; --rule:#31415F;
+    --ink:#E6ECF5; --ink-soft:#A7B3C9;
+    --l1:#E2A645; --l2:#3CC4AE; --l3:#9A9FF5; --l4:#F27499; --hyp:#BDA4F7;
+  }
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{
+  margin:0; font-family:var(--body); font-size:1.0625rem; line-height:1.6; color:var(--ink);
+  background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:24px 24px;
+}
+a{color:inherit; text-underline-offset:3px}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:4px}
+sub{font-size:.7em; line-height:0}
+code{font-family:inherit; font-size:.95em; font-weight:700; overflow-wrap:anywhere}
+.wrap{max-width:760px; margin:0 auto; padding:0 20px}
+
+/* header */
+.top{padding:40px 20px 18px}
+h1{font-size:clamp(2rem,5vw,2.75rem); line-height:1.08; margin:0; letter-spacing:-.02em}
+.sub{font-family:var(--hand); font-size:1.75rem; line-height:1.15; color:var(--ink-soft); margin:4px 0 0}
+.lede{margin:14px 0 0; max-width:60ch; color:var(--ink-soft)}
+.lede a{color:var(--ink); font-weight:700}
+
+/* lecture jump bar */
+.jump{position:sticky; top:0; z-index:5; background:var(--paper); background:color-mix(in srgb,var(--paper) 88%,transparent); -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px); border-bottom:1px solid var(--rule)}
+.jump ol{list-style:none; margin:0 auto; padding:10px 20px; max-width:760px; display:flex; flex-wrap:wrap; gap:6px}
+@media (max-width:700px){.jump ol{flex-wrap:nowrap; overflow-x:auto}}
+.jump a{display:inline-flex; align-items:baseline; gap:6px; white-space:nowrap; text-decoration:none; font-size:.88rem; padding:4px 10px; border:1.5px solid var(--c); border-radius:999px; background:var(--sheet)}
+.jump a b{color:var(--c)}
+.jump a:hover{background:color-mix(in srgb,var(--c) 12%,var(--sheet))}
+
+/* sheets */
+main{padding-top:22px; padding-bottom:8px}
+.sheet{position:relative; background:var(--sheet); border-left:6px solid var(--c,var(--ink)); border-radius:4px 12px 12px 4px; padding:24px 28px; margin:0 0 26px; scroll-margin-top:64px}
+.sheet h2{font-size:1.45rem; line-height:1.2; margin:0; letter-spacing:-.01em}
+.sheet h3{font-size:1.05rem; margin:24px 0 8px}
+.sheet p{margin:10px 0 0}
+.lec-head{display:flex; align-items:center; gap:16px; margin:0 0 14px}
+.lec-num{font-size:3rem; font-weight:700; line-height:.9; color:var(--c)}
+.lec-head .lec-date{font-family:var(--hand); font-size:1.45rem; line-height:1.1; color:var(--c); margin:2px 0 0}
+.sheet ul{margin:6px 0 0; padding-left:1.15em}
+.sheet li{margin:0 0 10px; padding-left:.25em}
+.sheet li::marker{color:var(--c)}
+.sheet ul ul{margin-top:6px}
+.sheet ul ul li{margin-bottom:5px}
+.f{font-weight:700; white-space:nowrap; padding:.05em .35em; border-radius:5px; background:color-mix(in srgb,var(--c,var(--ink)) 14%,transparent)}
+.sheet .note{margin:16px 0 0; padding:12px 14px; border-radius:8px; background:color-mix(in srgb,var(--ink) 6%,transparent)}
+
+/* handwritten notes: the things the professor flagged in class */
+.flag{display:block; font-family:var(--hand); font-weight:700; font-size:1.4rem; line-height:1.15; color:var(--c); margin:6px 0 4px; padding-left:12px; border-left:2px dashed var(--c); max-width:36ch}
+@media (min-width:1300px){
+  .flag{position:absolute; right:-252px; width:222px; margin:-1.6em 0 0; font-size:1.45rem}
+}
+
+/* slide map */
+.table-wrap{overflow-x:auto; margin:12px 0 0}
+table{border-collapse:collapse; width:100%; font-size:.95rem; line-height:1.45}
+th,td{text-align:left; vertical-align:top; padding:9px 12px 9px 0; border-bottom:1px solid var(--rule)}
+th{font-size:.88rem; color:var(--ink-soft)}
+td b{color:var(--c)}
+td.d{white-space:nowrap; color:var(--ink-soft)}
+@media (max-width:560px){
+  thead{display:none}
+  tr{display:grid; grid-template-columns:1fr auto; gap:2px 12px; padding:10px 0; border-bottom:1px solid var(--rule)}
+  td{border:0; padding:0}
+  td:nth-child(3){grid-column:1 / -1}
+}
+
+/* big picture */
+ol.chain{list-style:none; margin:16px 0 0; padding:0; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:12px; counter-reset:step}
+ol.chain li{position:relative; margin:0; padding:10px 10px 12px; border:1.5px solid var(--c); border-radius:10px; font-size:.9rem; line-height:1.35; background:var(--sheet)}
+ol.chain li::before{counter-increment:step; content:counter(step); display:block; font-family:var(--hand); font-weight:700; font-size:1.6rem; line-height:1; color:var(--c)}
+ol.chain li b{display:block; font-size:.98rem; margin:2px 0 3px}
+ol.chain li:not(:last-child)::after{content:""; position:absolute; top:50%; right:-12px; width:12px; border-top:2px solid var(--ink-soft)}
+ol.chain small{display:block; margin-top:6px; color:var(--ink-soft); font-size:.8rem}
+@media (max-width:700px){
+  ol.chain{grid-template-columns:1fr; gap:10px}
+  ol.chain li:not(:last-child)::after{top:auto; bottom:-11px; right:auto; left:22px; width:0; height:10px; border-top:0; border-left:2px solid var(--ink-soft)}
+}
+
+/* diagrams */
+figure{margin:18px 0}
+figure svg{display:block; width:100%; max-width:440px; height:auto; margin:0 auto}
+figcaption{font-size:.9rem; line-height:1.5; color:var(--ink-soft); max-width:58ch; margin:8px auto 0}
+svg text{font-family:var(--body); font-size:13px; fill:var(--ink)}
+svg .soft{fill:var(--ink-soft)}
+svg .ax{stroke:var(--ink-soft); stroke-width:1.4; fill:none}
+svg .gd{stroke:var(--ink-soft); stroke-width:1; stroke-dasharray:3 4; fill:none}
+svg .ln{fill:none; stroke-width:2.4; stroke-linecap:round}
+svg .thin{stroke-width:1.6}
+svg .dash{stroke-dasharray:7 6}
+svg .faint{opacity:.42}
+svg .b{font-weight:700}
+.k-ink{stroke:var(--ink)} .k-soft{stroke:var(--ink-soft)} .k-l2{stroke:var(--l2)} .k-l3{stroke:var(--l3)} .k-l4{stroke:var(--l4)} .k-hyp{stroke:var(--hyp)}
+.p-ink{fill:var(--ink)} .p-l2{fill:var(--l2)} .p-l3{fill:var(--l3)} .p-l4{fill:var(--l4)} .p-hyp{fill:var(--hyp)}
+.wash{fill:var(--l2); opacity:.13}
+
+/* self-checks */
+.check{margin:22px 0 0; padding-top:14px; border-top:1px solid var(--rule)}
+.check h3{margin:0 0 4px}
+.q{margin:12px 0 0}
+.q p{margin:0}
+.q details{margin:4px 0 0}
+.q summary{cursor:pointer; color:var(--c); font-weight:700; font-size:.92rem; width:max-content}
+.q details p{margin:4px 0 0; padding:8px 12px; border-radius:8px; background:color-mix(in srgb,var(--c) 10%,transparent)}
+
+/* formulas */
+.formulas{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:12px 18px; margin:14px 0 0}
+.formulas div{border-left:3px solid var(--c); padding:2px 0 2px 12px}
+.formulas dt{font-size:.88rem; color:var(--ink-soft)}
+.formulas dd{margin:2px 0 0; font-weight:700}
+@media (max-width:620px){.formulas{grid-template-columns:1fr}}
+
+footer{padding:6px 20px 44px; color:var(--ink-soft); font-size:.88rem}
+@media (max-width:560px){
+  .sheet{padding:20px 18px; border-left-width:5px}
+  .lec-num{font-size:2.4rem}
+  .f{white-space:normal; -webkit-box-decoration-break:clone; box-decoration-break:clone}
+}
+@media print{
+  .jump{display:none}
+  body{background:#fff}
+  .sheet{border:1px solid #bbb; border-left:6px solid var(--c,var(--ink))}
+  .flag{position:static; width:auto; margin:6px 0 4px}
+}
+</style>
+</head>
+<body>
+
+<header class="wrap top">
+  <h1>Econ 10000: the full notes</h1>
+  <p class="sub">lectures 1–4, Sep 29 to Oct 8</p>
+  <p class="lede">Everything from the first four lectures in class order, tied to the slide pages where it shows up. The <a href="../">mind map</a> gives the overview; this page has the details.</p>
+</header>
+
+<nav class="jump" aria-label="Jump to a lecture">
+  <ol>
+    <li><a href="#l1" style="--c:var(--l1)"><b>1</b>Economic approach</a></li>
+    <li><a href="#l2" style="--c:var(--l2)"><b>2</b>Budget line</a></li>
+    <li><a href="#l3" style="--c:var(--l3)"><b>3</b>Indifference curves</a></li>
+    <li><a href="#l4" style="--c:var(--l4)"><b>4</b>Demand</a></li>
+    <li><a href="#formulas" style="--c:var(--ink)">Formulas</a></li>
+  </ol>
+</nav>
+
+<main class="wrap">
+
+<section class="sheet" id="slides" aria-labelledby="slides-h">
+  <h2 id="slides-h">Where each lecture is in your slides</h2>
+  <p>The three PDFs aren't duplicates, despite the names. They're three back-to-back chunks of the course.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th scope="col">Lecture</th><th scope="col">Date</th><th scope="col">Slides</th></tr></thead>
+      <tbody>
+        <tr style="--c:var(--l1)"><td><b>1</b> The economic approach</td><td class="d">Sep 29</td><td><code>deck1_consumertheory.pdf</code> pp. 1–34</td></tr>
+        <tr style="--c:var(--l2)"><td><b>2</b> Budget constraint, plus the start of preferences</td><td class="d">Oct 1</td><td><code>deck1_consumertheory.pdf</code> pp. 35–48, then <code>deck1_consumertheory_copy.pdf</code> pp. 1–22</td></tr>
+        <tr style="--c:var(--l3)"><td><b>3</b> Indifference curves and utility maximization</td><td class="d">Oct 6</td><td><code>deck1_consumertheory_copy.pdf</code> pp. 22–42 (pp. 39–42 are annotated copies of the utility tables), plus <code>deck1_consumertheory_2.pdf</code> pp. 2–3</td></tr>
+        <tr style="--c:var(--l4)"><td><b>4</b> Demand curve and price effects</td><td class="d">Oct 8</td><td><code>deck1_consumertheory_2.pdf</code> pp. 4–23 (pp. 21–23 have the annotated income and substitution graphs)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Easy to mix up: opportunity cost was introduced in Lecture 1 and comes back in Lecture 2 as the slope of the budget line. And Lectures 3 and 4 go further than their titles suggest. Lecture 3 ends with the utility-maximization rule, and Lecture 4 goes past the demand curve into consumer surplus and income and substitution effects.</p>
+</section>
+
+<section class="sheet" id="picture" aria-labelledby="pic-h">
+  <h2 id="pic-h">The big picture</h2>
+  <p>Lectures 2–4 are one long argument.</p>
+  <ol class="chain">
+    <li style="--c:var(--l2)"><b>Budget line</b>what you can buy<small>Lecture 2</small></li>
+    <li style="--c:var(--l3)"><b>Indifference curves</b>what you want<small>Lectures 2–3</small></li>
+    <li style="--c:var(--l3)"><b>Best choice</b>where they touch: MRS = P<sub>x</sub>/P<sub>y</sub><small>Lecture 3</small></li>
+    <li style="--c:var(--l4)"><b>Change a price</b>choose again, and you trace out the demand curve<small>Lecture 4</small></li>
+    <li style="--c:var(--l4)"><b>Split the reaction</b>into substitution and income effects<small>Lecture 4</small></li>
+  </ol>
+  <p>Lecture 1's tools plug right in: opportunity cost is the budget line's slope, and “think at the margin” becomes marginal utility per dollar.</p>
+</section>
+
+<section class="sheet" id="l1" style="--c:var(--l1)" aria-labelledby="l1-h">
+  <header class="lec-head">
+    <span class="lec-num" aria-hidden="true">1</span>
+    <div><h2 id="l1-h">The economic approach</h2><p class="lec-date">Lecture 1, Sep 29</p></div>
+  </header>
+  <ul>
+    <li>Economics means limited resources and unlimited wants. Becker's approach has four parts: maximizing behavior, equilibrium, stable preferences, and scarcity.</li>
+    <li>Equilibrium means no one has an incentive to change their behavior. It doesn't have to mean supply = demand, and it isn't always good: empty COVID shelves, ~4% unemployment because people quit to find better jobs, and merging early in traffic (nice, but inefficient).</li>
+    <li>Nothing is truly free. Social media costs your time and data, and an “11% rebate” costs the hassle of mailing in receipts.</li>
+    <li><span class="f">Opportunity cost = explicit + implicit cost</span>. $500/month on vices for 40 years is $240K explicit, but about $3.16M if you had invested it at 10% (Excel: <code>=FV(0.10/12,480,500)</code>).
+      <span class="flag">He stressed this one: it's both parts together, not just the hidden cost.</span></li>
+    <li>Social Security takes 12.4% of pay (6.2% from you, 6.2% from your employer). Invested instead, that could grow to millions, but the program also works as insurance (OASDI).</li>
+    <li>Sunk costs are unrecoverable, so ignore them: “one more game,” a bad movie you already paid for, the F-35's past R&amp;D.</li>
+    <li>Marginal analysis: net benefit peaks where the <em>slopes</em> of total benefit and total cost are equal. That's <span class="f">MB = MC</span>, not the point where TB = TC.</li>
+    <li>Positive economics asks “what is”; normative asks “what ought to be.” He says the line blurs in practice.
+      <ul>
+        <li>COVID vaccine paper: fairer distribution would save 670,000 more lives but cost $1.8T (efficiency vs. equity).</li>
+        <li>Framing the same tradeoff two ways changed how the class voted (framing bias).</li>
+      </ul></li>
+    <li>Correlation ≠ causation. Ice cream sales and shark attacks are both driven by summer; the same trap shows up in billionaire dropouts and the WWII bomber picture.</li>
+    <li>Selection bias: grad students may out-earn others because they were stronger to begin with.</li>
+    <li>Difference-in-differences: the grad-school group gained $90K, a similar non-grad group gained $30K anyway, so the true effect is about $60K.</li>
+    <li>Experiments: RCTs, Thaler (2017 Nobel, behavioral economics), and John List's tax-letter field experiment. Check internal validity (was assignment random?) and external validity (does the result apply beyond this sample?).</li>
+  </ul>
+  <div class="check">
+    <h3>Check yourself</h3>
+    <div class="q"><p>Where is net benefit largest, and what's true about the slopes of total benefit and total cost there?</p>
+      <details><summary>Show answer</summary><p>Where the two curves are farthest apart. Their slopes are equal there: MB = MC.</p></details></div>
+    <div class="q"><p>The grad-school group's earnings rose $90K, and a similar group without grad school rose $30K. What's the effect of grad school?</p>
+      <details><summary>Show answer</summary><p>About $60K. Subtract the change the control group had anyway (difference-in-differences).</p></details></div>
+  </div>
+</section>
+
+<section class="sheet" id="l2" style="--c:var(--l2)" aria-labelledby="l2-h">
+  <header class="lec-head">
+    <span class="lec-num" aria-hidden="true">2</span>
+    <div><h2 id="l2-h">Budget constraint, plus the start of preferences</h2><p class="lec-date">Lecture 2, Oct 1</p></div>
+  </header>
+  <ul>
+    <li>Goods are sorted by whether they're rival and excludable:
+      <ul>
+        <li>Private: bottled water.</li>
+        <li>Club: an uncongested toll road, campus Wi-Fi.</li>
+        <li>Commons: fish in a lake, which get overfished (the volunteer demo).</li>
+        <li>Public: a lighthouse. Free riders mean these are underprovided, so taxes fund them.</li>
+        <li>Goods can switch boxes; congestion adds rivalry.</li>
+      </ul></li>
+    <li>Property rights let people protect a common resource, which makes sustainable use possible. The 2024 Nobel compared Nogales, Arizona with Nogales, Mexico: institutions explain the income gap.</li>
+    <li>Scarcity comes from budget, time, and resources (plus habits and social pressure). The most fundamental limit is 24 hours a day.</li>
+    <li>Budget line: <span class="f">P<sub>x</sub>X + P<sub>y</sub>Y = I</span>. With apples at $10, oranges at $2, and $50 income, you can buy at most 5 apples or 25 oranges, so y = 25 − 5x.</li>
+    <li><span class="f">Slope = −P<sub>x</sub>/P<sub>y</sub></span>: the relative price, or the opportunity cost of X in units of Y. Here, 1 apple “costs” 5 oranges.</li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 360 262" role="img" aria-labelledby="f1t">
+      <title id="f1t">Budget line from 25 oranges down to 5 apples, with slope minus 5. A dashed line shows it pivoting in to 2 apples if apples cost $25.</title>
+      <polygon class="wash" points="46,222 46,47 287.7,222"/>
+      <path class="ax" d="M46 20V222H344"/>
+      <path class="ln k-soft dash" d="M46 47L142.7 222"/>
+      <path class="ln k-l2" d="M46 47L287.7 222"/>
+      <circle class="p-l2" cx="46" cy="47" r="4"/>
+      <circle class="p-l2" cx="287.7" cy="222" r="4"/>
+      <text x="38" y="51.5" text-anchor="end">25</text>
+      <text x="287.7" y="240" text-anchor="middle">5</text>
+      <text class="soft" x="142.7" y="240" text-anchor="middle">2</text>
+      <text class="soft" x="54" y="17">oranges (y)</text>
+      <text class="soft" x="344" y="258" text-anchor="end">apples (x)</text>
+      <text class="p-l2 b" x="190" y="100">slope = −10/2 = −5</text>
+      <text class="p-l2" x="190" y="119">1 apple costs 5 oranges</text>
+      <text class="soft" x="150" y="210">apples at $25</text>
+    </svg>
+    <figcaption>Apples at $10, oranges at $2, $50 to spend. The shaded triangle is everything you can afford. If apples rose to $25, the line would pivot in to the dashed one: still 25 oranges max, but only 2 apples.</figcaption>
+  </figure>
+  <ul>
+    <li>How the line moves:
+      <ul>
+        <li>P<sub>x</sub> rises → the line pivots in and gets steeper. X is relatively pricier <em>and</em> you're poorer, which sets up Lecture 4.
+          <span class="flag">His rule for the class: a steeper line means X is relatively more expensive.</span></li>
+        <li>Income changes → parallel shift.</li>
+        <li>All prices and income rise 20% → the line doesn't move.</li>
+      </ul></li>
+    <li>SNAP example ($5 goods, $50 income):
+      <ul>
+        <li>$50 in cash shifts the line out in parallel.</li>
+        <li>$50 for “healthy food only” creates a kinked line. That only matters if you'd have wanted more candy.</li>
+        <li>Same logic as unwanted gifts → deadweight loss (coming later).</li>
+      </ul></li>
+    <li>Other constraint shapes:
+      <ul>
+        <li>Work vs. leisure: the slope is the real wage w/p, the opportunity cost of an hour of rest.</li>
+        <li>Risk vs. return (CAPM): upward-sloping, because risk is a “bad.”</li>
+        <li>Cleaning vs. studying: bowed out, meaning increasing opportunity cost.</li>
+        <li>Spend $240K now vs. have $3.2M at retirement.</li>
+      </ul></li>
+    <li>Preferences are assumed stable. His 20-lb weight loss came from learning sugar's true “price,” not from new tastes.</li>
+    <li>Rational preferences are complete (you can rank any two bundles) and transitive (A &gt; B and B &gt; C → A &gt; C). Extra assumptions: more is better, balanced beats extreme, and continuity.</li>
+    <li>Utility is just a number that ranks bundles. It is not happiness.</li>
+    <li>An indifference curve is a set of bundles with equal utility. For example, 70 food + 10 housing and 50 food + 20 housing both give 516 utils. You'd give up 20 food for your first extra 10 housing but far less later, so the curve bows inward (diminishing marginal utility).</li>
+  </ul>
+  <div class="check">
+    <h3>Check yourself</h3>
+    <div class="q"><p>Apples $10, oranges $2, income $50. What does the slope of −5 tell you?</p>
+      <details><summary>Show answer</summary><p>One apple costs you 5 oranges. It's the relative price, which is the opportunity cost of an apple.</p></details></div>
+    <div class="q"><p>How does the budget line move when income rises, and when P<sub>x</sub> rises?</p>
+      <details><summary>Show answer</summary><p>Income up: a parallel shift out. P<sub>x</sub> up: it pivots in around the Y-axis intercept and gets steeper.</p></details></div>
+  </div>
+</section>
+
+<section class="sheet" id="l3" style="--c:var(--l3)" aria-labelledby="l3-h">
+  <header class="lec-head">
+    <span class="lec-num" aria-hidden="true">3</span>
+    <div><h2 id="l3-h">Indifference curves and utility maximization</h2><p class="lec-date">Lecture 3, Oct 6</p></div>
+  </header>
+  <ul>
+    <li>Think of utility as a “mountain”; indifference curves are its contour lines. Farther out = higher utility.</li>
+    <li>One person's ICs can't cross, because that violates transitivity. That's why answering “C” to both clicker questions was a problem.</li>
+    <li>ICs also can't be thick (that violates “more is better”). With two goods they slope down and bow in. If one item is a “bad,” like risk, the IC slopes up.</li>
+    <li><span class="f">Slope of IC = MRS = MU<sub>x</sub>/MU<sub>y</sub></span>: how many Y you'd give up for one more X.
+      <ul>
+        <li>Derivation: steal some Y, then give back just enough X to make you whole, so loss + gain = 0.</li>
+        <li>Keep x on top.
+          <span class="flag">He called flipping it a common exam mistake.</span></li>
+      </ul></li>
+    <li>Where you have lots of Y and little X, MU<sub>x</sub> is high and MU<sub>y</sub> is low, so the IC is steep. With an all-vanilla sundae, you'd trade 3 vanilla scoops for 1 chocolate. Unlike the budget line, the IC's slope changes along the curve.</li>
+    <li>Extras: the water–diamond paradox (scarce diamonds have high marginal utility), perfect substitutes (Coke/Pepsi: straight line), and perfect complements (left/right socks: L-shape).</li>
+    <li>Utility tables ($7, both goods $1):
+      <ul>
+        <li>Chasing the biggest totals (5X and 2Y) gives 295 utils.</li>
+        <li>Spending each dollar where marginal utility is highest (3X and 4Y) gives 330 utils.</li>
+        <li>Multiplying every utility by 10 changes nothing, since only rankings matter.</li>
+      </ul></li>
+    <li>With P<sub>x</sub> = $2 and P<sub>y</sub> = $1, compare marginal utility <em>per dollar</em>. The answer is 2X and 3Y (280 utils), and the last dollar on each good gives 30 utils.</li>
+    <li>The rule: <span class="f">MU<sub>x</sub>/P<sub>x</sub> = MU<sub>y</sub>/P<sub>y</sub></span> (equal bang for the buck). Rearranged, it says MU<sub>x</sub>/MU<sub>y</sub> = P<sub>x</sub>/P<sub>y</sub>, so the IC is tangent to the budget line.
+      <span class="flag">He called this the most important formula in consumer theory.</span></li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 360 262" role="img" aria-labelledby="f2t">
+      <title id="f2t">A budget line with three indifference curves. The middle curve touches the line at point A, the lower curve crosses it twice, and the higher curve lies entirely beyond it.</title>
+      <path class="ax" d="M46 22V224H344"/>
+      <path class="ln k-ink" d="M46 60.7L319.1 224"/>
+      <path class="ln k-l3 faint" d="M118.1 28.0 L118.9 29.6 L120.6 33.2 L123.0 38.0 L126.1 43.8 L129.8 50.1 L134.1 56.9 L138.9 63.7 L144.2 70.7 L150.0 77.5 L156.3 84.1 L163.0 90.5 L170.1 96.7 L177.7 102.5 L185.7 108.1 L194.1 113.3 L203.0 118.3 L212.2 123.0 L221.8 127.4 L231.8 131.5 L242.1 135.4 L252.8 139.1 L263.9 142.5 L275.4 145.8 L287.2 148.8 L299.3 151.7 L311.8 154.4"/>
+      <path class="ln k-l3 dash" d="M77.0 28.0 L77.9 32.5 L80.0 41.8 L83.0 53.6 L86.8 66.2 L91.3 78.8 L96.4 90.7 L102.2 101.8 L108.7 111.9 L115.7 120.9 L123.3 129.0 L131.4 136.3 L140.1 142.8 L149.3 148.6 L159.0 153.8 L169.2 158.4 L179.9 162.6 L191.1 166.4 L202.7 169.8 L214.8 172.9 L227.3 175.7 L240.3 178.3 L253.8 180.7 L267.7 182.9 L282.0 184.8 L296.7 186.7 L311.8 188.4"/>
+      <path class="ln k-l3" d="M92.0 28.0 L92.9 30.9 L94.8 37.0 L97.6 45.1 L101.1 54.2 L105.3 63.9 L110.2 73.5 L115.6 82.9 L121.6 91.9 L128.2 100.4 L135.3 108.3 L142.9 115.5 L151.1 122.2 L159.7 128.4 L168.7 134.1 L178.3 139.3 L188.3 144.0 L198.8 148.4 L209.7 152.4 L221.0 156.1 L232.7 159.5 L244.9 162.7 L257.5 165.6 L270.5 168.3 L283.9 170.8 L297.7 173.1 L311.8 175.3"/>
+      <circle class="p-l3" cx="166.8" cy="132.9" r="4.5"/>
+      <text class="p-l3 b" x="174" y="157">A</text>
+      <text class="soft" x="54" y="19">good y</text>
+      <text class="soft" x="344" y="258" text-anchor="end">good x</text>
+      <text class="soft" x="190" y="214">budget line</text>
+      <path class="ln k-l3" d="M196 40H218"/><text x="226" y="44">touches at A</text>
+      <path class="ln k-l3 dash" d="M196 60H218"/><text x="226" y="64">crosses twice</text>
+      <path class="ln k-l3 faint" d="M196 80H218"/><text x="226" y="84">out of reach</text>
+    </svg>
+    <figcaption>The best choice is A, where an indifference curve just touches the budget line, so MRS = P<sub>x</sub>/P<sub>y</sub>. The dashed curve crosses the line twice, so you can still do better; the faded curve is out of reach.</figcaption>
+  </figure>
+  <ul>
+    <li>Intuition: if your willingness to pay (MRS) beats the market's price ratio, “take the deal” and buy more X until they match. If the IC crosses the budget line, you can still do better.</li>
+  </ul>
+  <div class="check">
+    <h3>Check yourself</h3>
+    <div class="q"><p>Why can't one person's indifference curves cross?</p>
+      <details><summary>Show answer</summary><p>It would break transitivity: a bundle with more of both goods would end up “equal” to one with less.</p></details></div>
+    <div class="q"><p>P<sub>x</sub> = $2 and P<sub>y</sub> = $1. The next unit of X adds 30 utils and the next unit of Y adds 20. Which do you buy?</p>
+      <details><summary>Show answer</summary><p>Y. It gives 20 utils per dollar, versus 30 ÷ $2 = 15 for X.</p></details></div>
+  </div>
+</section>
+
+<section class="sheet" id="l4" style="--c:var(--l4)" aria-labelledby="l4-h">
+  <header class="lec-head">
+    <span class="lec-num" aria-hidden="true">4</span>
+    <div><h2 id="l4-h">Demand curve and price effects</h2><p class="lec-date">Lecture 4, Oct 8</p></div>
+  </header>
+  <ul>
+    <li>Pop quiz setup: P<sub>x</sub> = $20, P<sub>y</sub> = $10, and you'd give 6Y for 1X.
+      <span class="flag">He hinted this could be a midterm question.</span>
+      <ul>
+        <li>MRS (6) &gt; P<sub>x</sub>/P<sub>y</sub> (2), so you're not at the optimum.</li>
+        <li>X gives more bang per buck, so buy more X and less Y.</li>
+      </ul></li>
+    <li>Equation method, with 10X + 5Y = 45 and MRS = X/2Y:
+      <ul>
+        <li>Step 1: set X/2Y = 2, so X = 4Y.</li>
+        <li>Step 2: plug into the budget line → Y* = 1, X* = 4.</li>
+      </ul></li>
+    <li>Deriving demand: at P<sub>x</sub> = $20 the best choice is 4 units. At P<sub>x</sub> = $5 the line rotates out and the best choice is 10 units. Plot (4, $20) and (10, $5), connect them, and that's the demand curve.</li>
+    <li>Every point on the demand curve is a utility-maximizing choice, and its height is your willingness to pay. At 4 units, the MRS is 4Y, and 4Y × $5 = $20. The curve slopes down because of diminishing marginal utility.</li>
+    <li>Consumer surplus = willingness to pay − price, summed over units. Graphically, it's the triangle under demand and above price.
+      <ul>
+        <li>Example: P = 30 − 2x at P = $10 → 10 units, so CS = ½ × 10 × 20 = $100.</li>
+        <li>The first unit alone was worth $28 to you, and you paid $10.</li>
+      </ul></li>
+    <li>Market demand = add quantities horizontally. Two identical people give P = 30 − X: same starting price, flatter line.
+      <span class="flag">He said about half of students get this wrong on the midterm.</span></li>
+    <li>Price increase (eggflation, cigarette tax): moving from A (10 units) to B (4 units) is a total effect of −6, and you end up on a lower IC. To split it, slide the new budget line out parallel until it touches the <em>old</em> IC at point C (6 units). This is the “hypothetical budget line.”
+      <ul>
+        <li>Substitution effect, A → C (−4): X is relatively pricier, so you swap toward Y. It always goes opposite the price change.</li>
+        <li>Income effect, C → B (−2): your real buying power fell, so you buy less of a normal good.</li>
+      </ul></li>
+  </ul>
+  <figure>
+    <svg viewBox="0 0 360 316" role="img" aria-labelledby="f3t">
+      <title id="f3t">When the price of x rises, the budget line swings in and the choice moves from A at 10 units to B at 4 units. A dashed hypothetical budget line, parallel to the new one, touches the original indifference curve at C, 6 units. That splits the change into a substitution effect of minus 4 and an income effect of minus 2.</title>
+      <path class="ax" d="M46 20V222H344"/>
+      <path class="gd" d="M166.8 153.7V222M118.5 119.6V222M94.3 153.7V222"/>
+      <path class="ln k-soft thin" d="M46 99.5L319.1 222"/>
+      <path class="ln k-hyp dash" d="M46 38.3L209.8 222"/>
+      <path class="ln k-ink" d="M46 99.5L155.2 222"/>
+      <path class="ln k-l4" d="M78.0 26.0 L78.9 30.4 L81.0 39.4 L84.0 50.8 L87.7 63.1 L92.2 75.5 L97.3 87.3 L103.1 98.2 L109.5 108.3 L116.5 117.3 L124.1 125.4 L132.2 132.7 L140.8 139.2 L150.0 145.1 L159.6 150.3 L169.8 155.0 L180.4 159.3 L191.6 163.1 L203.2 166.6 L215.2 169.7 L227.7 172.6 L240.6 175.2 L254.0 177.6 L267.8 179.8 L282.1 181.9 L296.8 183.7 L311.8 185.5"/>
+      <path class="ln k-l4" d="M58.8 26.0 L59.8 37.3 L62.0 58.1 L65.2 80.1 L69.3 100.2 L74.1 117.1 L79.7 131.1 L86.0 142.6 L92.9 152.1 L100.5 159.9 L108.7 166.4 L117.4 171.9 L126.8 176.6 L136.7 180.6 L147.1 184.0 L158.1 187.0 L169.7 189.6 L181.7 191.9 L194.2 193.9 L207.3 195.8 L220.8 197.4 L234.8 198.8 L249.3 200.2 L264.2 201.4 L279.6 202.4 L295.5 203.4 L311.8 204.4"/>
+      <circle class="p-l4" cx="166.8" cy="153.7" r="4.5"/>
+      <circle class="p-hyp" cx="118.5" cy="119.6" r="4.5"/>
+      <circle class="p-l4" cx="94.3" cy="153.7" r="4.5"/>
+      <text class="b" x="173" y="149">A</text>
+      <text class="b" x="125" y="114">C</text>
+      <text class="b" x="87" y="149" text-anchor="end">B</text>
+      <text class="p-l4" x="316" y="189.5">IC₁</text>
+      <text class="p-l4" x="316" y="208">IC₂</text>
+      <text x="94.3" y="239" text-anchor="middle">4</text>
+      <text x="118.5" y="239" text-anchor="middle">6</text>
+      <text x="166.8" y="239" text-anchor="middle">10</text>
+      <text class="soft" x="54" y="17">good y</text>
+      <text class="soft" x="344" y="239" text-anchor="end">good x</text>
+      <path class="ln k-soft thin" d="M214 36H238"/><text x="246" y="40">before</text>
+      <path class="ln k-ink" d="M214 56H238"/><text x="246" y="60">after P<tspan font-size="10" dy="3">x</tspan><tspan dy="-3"> rises</tspan></text>
+      <path class="ln k-hyp dash" d="M214 76H238"/><text x="246" y="80">hypothetical</text>
+      <path class="ln k-l4" style="stroke-width:2" d="M166.8 258H124"/><polygon class="p-l4" points="118.5,258 125.5,254 125.5,262"/>
+      <text class="p-l4 b" x="173" y="262.5">substitution effect: −4</text>
+      <path class="ln k-l4" style="stroke-width:2" d="M118.5 280H100"/><polygon class="p-l4" points="94.3,280 101.3,276 101.3,284"/>
+      <text class="p-l4 b" x="125" y="284.5">income effect: −2</text>
+      <path class="ln k-ink" style="stroke-width:2" d="M166.8 302H100"/><polygon class="p-ink" points="94.3,302 101.3,298 101.3,306"/>
+      <text class="b" x="173" y="306.5">total: −6</text>
+    </svg>
+    <figcaption>When P<sub>x</sub> rises, the budget line swings in and the best choice moves from A to B. Sliding a parallel copy of the new line out until it touches the old curve (the dashed “hypothetical” line, purple in class) finds C. A → C is the substitution effect and C → B is the income effect. Drawn for a normal good.</figcaption>
+  </figure>
+  <ul>
+    <li>For an inferior good, the income effect flips: poorer → buy <em>more</em> X. That's why he questioned whether cigarette taxes deter smoking. Some smokers may cut healthy food instead.</li>
+  </ul>
+  <div class="check">
+    <h3>Check yourself</h3>
+    <div class="q"><p>Two identical people each have demand P = 30 − 2x. What's the market demand curve?</p>
+      <details><summary>Show answer</summary><p>P = 30 − X. At each price, double the quantity: same intercept, flatter line.</p></details></div>
+    <div class="q"><p>P<sub>x</sub> rises. Which effect always pushes you to buy less X, and which one can flip?</p>
+      <details><summary>Show answer</summary><p>The substitution effect always means less X. The income effect flips for an inferior good.</p></details></div>
+  </div>
+</section>
+
+<section class="sheet" id="formulas" aria-labelledby="fx-h">
+  <h2 id="fx-h">Formulas on one page</h2>
+  <p>The edge color shows which lecture each one comes from.</p>
+  <dl class="formulas">
+    <div style="--c:var(--l1)"><dt>Best decision</dt><dd>MB = MC</dd></div>
+    <div style="--c:var(--l1)"><dt>Opportunity cost</dt><dd>explicit + implicit cost</dd></div>
+    <div style="--c:var(--l2)"><dt>Budget line</dt><dd>P<sub>x</sub>X + P<sub>y</sub>Y = I, intercepts I/P<sub>x</sub> and I/P<sub>y</sub></dd></div>
+    <div style="--c:var(--l2)"><dt>Budget line slope (relative price)</dt><dd>−P<sub>x</sub>/P<sub>y</sub></dd></div>
+    <div style="--c:var(--l2)"><dt>Work vs. leisure</dt><dd>max consumption 24w/p, slope w/p (real wage)</dd></div>
+    <div style="--c:var(--l2)"><dt>CAPM line</dt><dd>return = R<sub>f</sub> + (R<sub>m</sub> − R<sub>f</sub>) × β</dd></div>
+    <div style="--c:var(--l3)"><dt>Indifference curve slope</dt><dd>MRS = MU<sub>x</sub>/MU<sub>y</sub></dd></div>
+    <div style="--c:var(--l3)"><dt>Utility maximization</dt><dd>MU<sub>x</sub>/P<sub>x</sub> = MU<sub>y</sub>/P<sub>y</sub>, so MRS = P<sub>x</sub>/P<sub>y</sub></dd></div>
+    <div style="--c:var(--l4)"><dt>Consumer surplus (straight-line demand)</dt><dd>½ × quantity × (top price − price paid)</dd></div>
+    <div style="--c:var(--l4)"><dt>Market demand</dt><dd>add up quantities at each price</dd></div>
+    <div style="--c:var(--l4)"><dt>Price change</dt><dd>total (A → B) = substitution (A → C) + income (C → B)</dd></div>
+  </dl>
+</section>
+
+<section class="sheet" id="next" style="--c:var(--ink-soft)" aria-labelledby="next-h">
+  <h2 id="next-h">What's next on your slides</h2>
+  <p>In <code>deck1_consumertheory_2.pdf</code>, pp. 24–40 cover:</p>
+  <ul>
+    <li>CPI vs. PCE, and Social Security cost-of-living raises</li>
+    <li>the deadweight loss of holiday gifts</li>
+    <li>Hicks vs. Slutsky compensation</li>
+    <li>labor supply</li>
+  </ul>
+  <p>Elasticities start on p. 41.
+    <span class="flag">The exam is pen-and-paper, so practice drawing these graphs by hand.</span></p>
+</section>
+
+</main>
+
+<footer class="wrap">Written from the Sep 29 to Oct 8 lecture transcripts and the three consumer-theory slide decks.</footer>
+
+<script>addEventListener('beforeprint',()=>document.querySelectorAll('details').forEach(d=>d.open=true));</script>
+</body>
+</html>
