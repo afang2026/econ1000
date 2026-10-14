@@ -75,7 +75,7 @@ body{display:flex; flex-direction:column; font-family:var(--body); color:var(--i
 
   function fromHash(){
     var h = location.hash.replace('#','');
-    return names[h] || 'map';
+    return names[h] || (wide.matches ? 'both' : 'map');
   }
   function show(view, push){
     if (view === 'both' && !wide.matches) view = 'map';
