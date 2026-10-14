@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Econ 10000 — Lectures 1–4 mind map</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Caveat:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#F5F8FA; --grid:#DFE8EF; --ink:#1E2B45; --ink-soft:#56627A;
+  --l1:#B7791F; --l2:#0F7B6C; --l3:#4C51BF; --l4:#C53060;
+  --hand:'Caveat', 'Comic Sans MS', cursive;
+  --body:'Atkinson Hyperlegible', system-ui, sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  font-family:var(--body); color:var(--ink); line-height:1.5;
+  background-color:var(--paper);
+  background-image:
+    linear-gradient(var(--grid) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size:24px 24px;
+  min-height:100vh;
+}
+header{
+  display:flex; flex-wrap:wrap; align-items:flex-end; justify-content:space-between;
+  gap:12px 24px; padding:22px 28px 6px; max-width:1300px; margin:0 auto;
+}
+h1{font-size:1.6rem; margin:0; font-weight:700; letter-spacing:-.01em}
+h1 small{display:block; font-family:var(--hand); font-size:1.35rem; font-weight:500; color:var(--ink-soft); letter-spacing:0}
+.controls{display:flex; gap:10px; align-items:center; font-size:.95rem}
+.toggle{
+  display:inline-flex; align-items:center; gap:8px; cursor:pointer; user-select:none;
+  background:#fff; border:1.5px solid var(--ink); border-radius:999px; padding:6px 14px;
+  font:inherit; color:inherit;
+}
+.toggle[aria-pressed="true"]{background:var(--ink); color:#fff}
+.toggle:focus-visible, .node:focus-visible, .outline button:focus-visible, .close:focus-visible, .reveal:focus-visible{outline:3px solid #F2B705; outline-offset:2px}
+.hint{color:var(--ink-soft); font-size:.9rem; max-width:1300px; margin:0 auto; padding:0 28px}
+
+/* ---------- map ---------- */
+.map-wrap{max-width:1300px; margin:0 auto; padding:4px 12px 24px}
+svg.map{width:100%; height:auto; display:block}
+.node{cursor:pointer}
+.node rect{transition:transform .15s}
+.node:hover rect.pill{stroke-width:2.5}
+.node text{font-family:var(--body); pointer-events:none}
+.node.active rect.pill{stroke-width:3.2}
+.edge{fill:none; stroke-linecap:round}
+
+/* ---------- outline (mobile) ---------- */
+.outline{display:none; padding:8px 16px 40px}
+.outline section{background:#fff; border-left:6px solid var(--c); border-radius:4px 10px 10px 4px; margin:0 0 16px; padding:12px 14px}
+.outline h2{margin:0 0 2px; font-size:1.1rem}
+.outline .date{font-family:var(--hand); font-size:1.2rem; color:var(--c)}
+.outline ul{list-style:none; margin:8px 0 0; padding:0; display:grid; gap:6px}
+.outline button{
+  width:100%; text-align:left; font:inherit; color:var(--ink); background:transparent;
+  border:1.5px solid var(--c); border-radius:8px; padding:8px 10px; cursor:pointer;
+}
+@media (max-width:860px){
+  .map-wrap{display:none}
+  .outline{display:block}
+}
+
+/* ---------- detail panel ---------- */
+.panel{
+  position:fixed; top:0; right:0; height:100vh; width:min(440px, 100vw);
+  background:#fff; border-left:6px solid var(--c, var(--ink));
+  box-shadow:-12px 0 40px rgba(30,43,69,.18);
+  transform:translateX(105%); transition:transform .28s ease;
+  overflow-y:auto; padding:22px 24px 40px; z-index:10;
+}
+.panel.open{transform:translateX(0)}
+@media (max-width:860px){
+  .panel{top:auto; bottom:0; height:82vh; width:100vw; border-left:none; border-top:6px solid var(--c);
+    border-radius:16px 16px 0 0; transform:translateY(105%)}
+  .panel.open{transform:translateY(0)}
+}
+@media (prefers-reduced-motion:reduce){ .panel{transition:none} }
+.close{
+  position:sticky; top:0; float:right; background:#fff; border:1.5px solid var(--ink);
+  border-radius:999px; width:34px; height:34px; font-size:1.1rem; cursor:pointer; color:var(--ink);
+}
+.panel .date{font-family:var(--hand); font-size:1.35rem; color:var(--c)}
+.panel h2{margin:2px 0 12px; font-size:1.35rem; line-height:1.25}
+.panel h3{font-size:.95rem; margin:18px 0 6px; color:var(--c)}
+.panel ul{padding-left:1.1em; margin:0}
+.panel li{margin:0 0 6px}
+.panel .example{background:color-mix(in srgb, var(--c) 9%, white); border-radius:8px; padding:10px 12px; margin-top:6px}
+.panel .graph{margin:8px 0 2px; border:1px solid var(--grid); border-radius:8px; background:var(--paper)}
+.panel .graph svg{width:100%; height:auto; display:block}
+.panel .q{font-size:1.08rem; font-weight:700; background:var(--paper); border:1.5px dashed var(--c); border-radius:8px; padding:12px}
+.reveal{margin-top:10px; font:inherit; background:var(--c); color:#fff; border:none; border-radius:999px; padding:8px 16px; cursor:pointer}
+.answer[hidden]{display:none}
+.panel table{border-collapse:collapse; width:100%; font-size:.92rem; margin-top:6px}
+.panel th,.panel td{border:1px solid #c9d4de; padding:7px 8px; text-align:left; vertical-align:top}
+.panel th{background:var(--paper)}
+.panel .topics-list button{font:inherit; background:none; border:none; color:var(--c); text-decoration:underline; cursor:pointer; padding:0; text-align:left}
+.formula{font-family:var(--hand); font-size:1.4rem; color:var(--ink)}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Econ 10000: the story so far
+    <small>four lectures, one branch each — click any bubble</small></h1>
+  <div class="controls">
+    <button class="toggle" id="quiz" aria-pressed="false" title="Show a question before the notes">
+      <span aria-hidden="true">?</span> Quiz me mode</button>
+  </div>
+</header>
+<p class="hint">Read the map clockwise: Lecture 1 (top left) → 2 → 3 → 4 (bottom left). Each bubble opens notes, an example from class, and a sketch of the graph.</p>
+
+<div class="map-wrap"><svg class="map" id="map" viewBox="0 0 1240 860" role="img" aria-label="Mind map of lectures 1 to 4"></svg></div>
+<div class="outline" id="outline"></div>
+
+<aside class="panel" id="panel" aria-live="polite" aria-label="Topic details">
+  <button class="close" id="close" aria-label="Close notes">×</button>
+  <div id="panelBody"></div>
+</aside>
+
+<script>
+/* ======================= tiny graph kit ======================= */
+function G(xmax, ymax, opt={}){
+  const W=320,H=220,ox=42,oy=188,pw=262,ph=168;
+  const sx=x=>ox+x/xmax*pw, sy=y=>oy-y/ymax*ph;
+  let s=`<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" font-family="Caveat, cursive">`;
+  s+=`<line x1="${ox}" y1="${oy}" x2="${ox+pw+8}" y2="${oy}" stroke="#1E2B45" stroke-width="1.6"/>`;
+  s+=`<line x1="${ox}" y1="${oy}" x2="${ox}" y2="${oy-ph-10}" stroke="#1E2B45" stroke-width="1.6"/>`;
+  s+=`<text x="${ox+pw+6}" y="${oy+18}" font-size="17" text-anchor="end" fill="#1E2B45">${opt.xl||'x'}</text>`;
+  s+=`<text x="${ox-6}" y="${oy-ph-2}" font-size="17" fill="#1E2B45" dx="12">${opt.yl||'y'}</text>`;
+  const api={
+    sx,sy,
+    path(pts,col,w=2.4,dash=''){s+=`<path d="M${pts.map(p=>sx(p[0]).toFixed(1)+' '+sy(p[1]).toFixed(1)).join(' L')}" fill="none" stroke="${col}" stroke-width="${w}" ${dash?`stroke-dasharray="${dash}"`:''} stroke-linecap="round"/>`;return api},
+    fn(f,a,b,col,w,dash){const pts=[];for(let i=0;i<=60;i++){const x=a+(b-a)*i/60;pts.push([x,f(x)])}return api.path(pts,col,w,dash)},
+    poly(pts,fill){s+=`<polygon points="${pts.map(p=>sx(p[0])+','+sy(p[1])).join(' ')}" fill="${fill}"/>`;return api},
+    dot(x,y,col,label,dx=6,dy=-6){s+=`<circle cx="${sx(x)}" cy="${sy(y)}" r="4.2" fill="${col}"/>`;if(label)s+=`<text x="${sx(x)+dx}" y="${sy(y)+dy}" font-size="18" font-weight="700" fill="${col}">${label}</text>`;return api},
+    text(x,y,t,col='#1E2B45',size=16,anchor='start'){s+=`<text x="${sx(x)}" y="${sy(y)}" font-size="${size}" fill="${col}" text-anchor="${anchor}">${t}</text>`;return api},
+    raw(str){s+=str;return api},
+    guide(x,y){api.path([[x,0],[x,y],[0,y]],'#8a96ab',1.2,'4 4');return api},
+    done(){return s+'</svg>'}
+  };
+  return api;
+}
+const C={l1:'#B7791F',l2:'#0F7B6C',l3:'#4C51BF',l4:'#C53060',ink:'#1E2B45',grey:'#8a96ab'};
+
+const graphs={
+  sd:()=>{const g=G(20,20,{xl:'Q',yl:'P'});
+    g.path([[2,18],[18,3]],C.l1).path([[2,3],[18,18]],C.ink).dot(10,10.5,C.l1,'equilibrium',8,-8)
+     .text(18,1.2,'D',C.l1,18).text(18.3,17,'S',C.ink,18);return g.done()},
+  mbmc:()=>{const g=G(20,20,{xl:'quantity',yl:'$'});
+    g.path([[1,18],[18,2]],C.l1).path([[1,2],[18,18]],C.ink).guide(9.5,10).dot(9.5,10,C.l1,'',0,0)
+     .text(17.5,4,'MB',C.l1,18).text(17,17.5,'MC',C.ink,18).text(9.5,-1.6,'Q*',C.ink,17,'middle')
+     .text(1.5,15,'MB > MC: do more',C.grey,15).text(11,6,'MC > MB: do less',C.grey,15);return g.done()},
+  did:()=>{const g=G(2,14,{xl:'time',yl:'outcome'});
+    g.path([[0.3,4],[1.7,6]],C.ink).path([[0.3,7],[1.7,12]],C.l1).path([[1,8],[1.7,9]],C.l1,2,'5 5')
+     .path([[1,0],[1,13]],C.grey,1.2,'4 4').text(1,-1.3,'policy starts',C.grey,15,'middle')
+     .text(1.72,12,'treated',C.l1,16).text(1.72,6,'control',C.ink,16).text(1.72,9,'no-policy path',C.l1,14)
+     .raw(`<line x1="${G(2,14).sx(1.63)}" y1="${G(2,14).sy(9)}" x2="${G(2,14).sx(1.63)}" y2="${G(2,14).sy(12)}" stroke="#C53060" stroke-width="2.5"/>`)
+     .text(1.58,10.2,'effect',C.l4,16,'end');return g.done()},
+  budget:()=>{const g=G(6.5,28,{xl:'apples (x)',yl:'oranges (y)'});
+    g.poly([[0,0],[0,25],[5,0]],'rgba(15,123,108,.12)').path([[0,25],[5,0]],C.l2,2.8)
+     .dot(0,25,C.l2,'I/Py = 25',8,4).dot(5,0,C.l2,'I/Px = 5',-20,-10)
+     .text(2.7,14,'slope = −Px/Py = −5',C.ink,17).text(0.6,5,'affordable set',C.grey,15);return g.done()},
+  rotate:()=>{const g=G(6.5,28,{xl:'x',yl:'y'});
+    g.poly([[0,25],[5,0],[2.5,0]],'rgba(197,48,96,.12)').path([[0,25],[5,0]],C.l2,2.6).path([[0,25],[2.5,0]],C.l4,2.6,'6 5')
+     .text(3.3,8,'Px rises: line pivots in',C.l4,16).text(2.6,3,'options lost',C.grey,15)
+     .text(0.4,27,'y-intercept unchanged',C.grey,15);return g.done()},
+  kink:()=>{const g=G(80,80,{xl:'food',yl:'other goods'});
+    g.path([[0,50],[20,50],[70,0]],C.l2,2.8).path([[0,70],[20,50]],C.grey,2,'5 5')
+     .dot(20,50,C.l2,'kink',6,-8).text(2,74,'only reachable with cash',C.grey,15)
+     .text(36,40,'$50 cash + $20 food stamps',C.ink,15);return g.done()},
+  leisure:()=>{const g=G(26,400,{xl:'rest hours',yl:'consumption'});
+    g.path([[0,360],[24,0]],C.l2,2.8).dot(0,360,C.l2,'24·W/P',8,4).dot(24,0,C.l2,'24 h',-14,-10)
+     .text(10,230,'slope = −W/P',C.ink,17).text(10,205,'(the real wage)',C.grey,15);return g.done()},
+  ic:()=>{const g=G(24,30,{xl:'housing',yl:'food'});
+    g.fn(x=>100/x,3.6,23,C.l2,2.8).dot(4,25,C.l2,'A').dot(10,10,C.l2,'B').dot(20,5,C.l2,'C')
+     .text(5.5,21,'steep: give up lots of food',C.grey,15).text(12,9,'flat: give up little',C.grey,15)
+     .text(18,7.5,'U = same',C.l2,16);return g.done()},
+  icshapes:()=>{const g=G(12,12,{xl:'x',yl:'y'});
+    g.fn(x=>16/x,1.5,11.5,C.l3,2.8).path([[0,10],[10,0]],C.l1,2.6,'7 5')
+     .text(6.2,3.6,'typical: convex',C.l3,16).text(0.4,10.8,'perfect substitutes (Coke/Pepsi)',C.l1,15);return g.done()},
+  tangency:()=>{const g=G(22,22,{xl:'x',yl:'y'});
+    g.path([[0,20],[20,0]],C.ink,2.6).fn(x=>64/x,3.3,21,C.grey,1.8).fn(x=>100/x,5,21,C.l3,2.8).fn(x=>144/x,7.2,21,C.grey,1.8,'5 5')
+     .dot(10,10,C.l3,'E',6,-8).text(12,18,'too expensive',C.grey,15).text(15,5.2,'best affordable',C.l3,15)
+     .text(1.4,21.4,'at E:  MRS = Px/Py',C.ink,17);return g.done()},
+  nontangent:()=>{const g=G(22,22,{xl:'x',yl:'y'});
+    g.path([[0,20],[20,0]],C.ink,2.6).fn(x=>64/x,3.1,21,C.l4,2.4).fn(x=>100/x,5,21,C.l3,2.2,'5 5')
+     .dot(4,16,C.l4,'P',8,-4).dot(10,10,C.l3,'E',6,-8)
+     .raw(`<path d="M${g.sx(5)} ${g.sy(15)} Q ${g.sx(8)} ${g.sy(14)} ${g.sx(9.3)} ${g.sy(11)}" fill="none" stroke="#C53060" stroke-width="2" marker-end="url(#ar)"/><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0 0 L10 5 L0 10z" fill="#C53060"/></marker></defs>`)
+     .text(6.3,19,'at P: MRS > Px/Py',C.l4,16).text(6.3,17.3,'→ trade y for more x',C.l4,15);return g.done()},
+  demand:()=>{const g=G(16,25,{xl:'x',yl:'Px'});
+    g.path([[1.6,26],[14,0]],C.l4,2.8).guide(4,20).guide(10,5).dot(4,20,C.l4,'B',8,-4).dot(10,5,C.l4,'A',8,-4)
+     .text(-0.6,20,'20',C.ink,15,'end').text(-0.6,5,'5',C.ink,15,'end').text(4,-1.6,'4',C.ink,15,'middle').text(10,-1.6,'10',C.ink,15,'middle')
+     .text(11.5,9,'demand',C.l4,17);return g.done()},
+  cs:()=>{const g=G(16,32,{xl:'x',yl:'Px'});
+    g.poly([[0,30],[0,10],[10,10]],'rgba(197,48,96,.2)').path([[0,30],[15,0]],C.l4,2.8).path([[0,10],[16,10]],C.ink,1.8,'6 4')
+     .text(2.2,15,'consumer surplus',C.l4,16).text(13,11.3,'price',C.ink,15).text(9,20,'P = 30 − 2x',C.l4,16);return g.done()},
+  market:()=>{const g=G(32,32,{xl:'quantity',yl:'P'});
+    g.path([[0,30],[15,0]],C.ink,2.4).path([[0,30],[30,0]],C.l4,2.8)
+     .text(4,9,'one person',C.ink,16).text(19,14,'market (2 people)',C.l4,16).text(15,-1.6,'15',C.ink,15,'middle').text(30,-1.6,'30',C.ink,15,'middle')
+     .text(14,28,'add sideways → flatter',C.grey,15);return g.done()},
+  subinc:()=>{const g=G(22,42,{xl:'x',yl:'y'});
+    g.path([[0,20],[20,0]],C.ink,2.2).path([[0,20],[5,0]],C.l4,2.4).path([[0,40],[10,0]],C.grey,2,'6 4')
+     .fn(x=>100/x,2.6,21,C.l3,2.4).fn(x=>25/x,1.3,21,C.l3,1.8,'2 3')
+     .dot(10,10,C.ink,'A').dot(5,20,C.grey,'C').dot(2.5,10,C.l4,'B',-18,-6)
+     .text(9.5,38,'dashed: compensated line',C.grey,15)
+     .raw(`<path d="M${g.sx(10)} ${g.sy(-2.6)} L${g.sx(5)} ${g.sy(-2.6)}" stroke="#4C51BF" stroke-width="3"/><path d="M${g.sx(5)} ${g.sy(-4.2)} L${g.sx(2.5)} ${g.sy(-4.2)}" stroke="#C53060" stroke-width="3"/>`)
+     .text(12.5,31,'A→C substitution',C.l3,16).text(12.5,27,'C→B income',C.l4,16);return g.done()}
+};
+
+const goodsTable=`<table><tr><th></th><th>Rival</th><th>Non-rival</th></tr>
+<tr><th>Excludable</th><td><b>Private good</b><br>bottled water on a shelf</td><td><b>Club good</b><br>congested Wi-Fi / paid access</td></tr>
+<tr><th>Non-excludable</th><td><b>Common resource</b><br>fish in a shared lake</td><td><b>Public good</b><br>lighthouse, clean air</td></tr></table>`;
+
+/* ======================= course content ======================= */
+const lectures=[
+ {id:'l1',n:1,date:'Sep 29',title:'The economic way of thinking',color:C.l1,
+  pos:[400,225],side:'left',
+  big:['Economics studies choices under scarcity: unlimited wants, limited resources (and limited time).','Every later lecture is a formal version of one idea here: maximize something, subject to a constraint, at the margin.'],
+  topics:[
+   {t:'What is economics?',q:'What are Gary Becker\'s three building blocks of the economic approach?',
+    pts:['Scarcity: wants are unlimited, resources are not.','Becker\'s three pillars: <b>maximizing behavior</b> (an objective like utility or profit), <b>market equilibrium</b>, and <b>stable preferences</b>.','The approach is comprehensive: it applies to crime, health, family, not only markets.'],
+    ex:'The professor "maximizes utility" by teaching rather than chasing an investment-bank salary: the objective function isn\'t just money.'},
+   {t:'Equilibrium ≠ "good"',q:'Give two reasons an equilibrium might not be a happy outcome.',
+    pts:['Equilibrium means nobody has a reason to change their behavior. It doesn\'t mean everyone is satisfied or the market clears.','There can be <b>multiple equilibria</b>.','Some unemployment (~4%, the natural rate) is healthy: people are searching for better matches.'],
+    ex:'Merging at a construction zone: merge early or zip in at the last second are both possible equilibria. Unemployment of 3.5% during the recent inflation signaled an overheated labor market where wages got bid up fast.',graph:'sd'},
+   {t:'Opportunity cost &\ntime value of money',q:'What is the opportunity cost of attending college, and why must future dollars be discounted?',
+    pts:['<b>Opportunity cost</b> = value of the next-best alternative you give up.','Money today ≠ money in the future: compound forward for future value, discount back for present value.','Framing matters: the same lifetime income looks huge in future dollars and much smaller in present value.'],
+    ex:'Social Security: ~12.4% of pay (6.2% you + 6.2% employer) every year for decades. Invested and compounded instead, that would be worth millions, versus roughly a few thousand dollars a month in benefits. Lousy return, but it also works as insurance against living a long time (OASDI).'},
+   {t:'Thinking at the margin',q:'When should you stop doing more of an activity? And what costs should you ignore?',
+    pts:['<b>Sunk costs</b> are gone: "we\'ve come this far" is not a reason.','Decide on <b>marginal benefit vs. marginal cost</b>; optimum where MB = MC.','Consumers: equalize marginal utility per dollar across goods (preview of Lecture 3).'],
+    ex:'F-35: trillions already spent are sunk; what matters is the marginal cost of the next jet. Gym food: don\'t spend everything on bread or everything on chicken, since the last unit of either adds little.',graph:'mbmc'},
+   {t:'Positive vs. normative',q:'Why did the professor say the line between positive and normative is blurry?',
+    pts:['<b>Positive</b>: what is / testable. <b>Normative</b>: what should be / value judgments.','Economists can give the numbers; the value judgment is yours.','<b>Framing bias</b>: how a question is worded changes answers.','Trade-off between <b>efficiency</b> and <b>equity</b>.'],
+    ex:'COVID vaccines went to the highest bidders first. A more equitable allocation would save more lives but at a big global cost (~$2.3M per life saved). Class votes flipped depending on how the question was framed.'},
+   {t:'Correlation vs. causation',q:'How do economists find a causal effect instead of a correlation?',
+    pts:['Shark attacks and drownings rise together: the cause is summer.','Famous dropouts (Gates, Jobs, Zuckerberg) don\'t prove dropping out works: <b>selection</b> and <b>survivorship bias</b> (WWII planes).','Tools: treatment vs. control, <b>difference-in-differences</b>, <b>randomized control trials</b>, <b>field experiments</b>.'],
+    ex:'John List\'s tax-letter field experiment: randomly varying the wording of late-tax letters ("9 out of 10 people pay on time") changed how many people paid.',graph:'did'}
+  ]},
+ {id:'l2',n:2,date:'Oct 1',title:'Budget constraints & preferences',color:C.l2,
+  pos:[840,225],side:'right',
+  big:['The budget line shows what you <i>can</i> buy; preferences (indifference curves) show what you <i>want</i>.','These are the two ingredients for deriving a demand curve.'],
+  topics:[
+   {t:'Types of goods',q:'Classify goods using rivalry and excludability. What goes wrong with public goods and common resources?',
+    pts:['<b>Rival</b>: my use leaves less for you. <b>Excludable</b>: you can be kept out.','Public goods get under-provided (free riders), so they\'re often funded by taxes.','Common resources get over-used: <b>tragedy of the commons</b>. Assigning <b>property rights</b> fixes it.','Goods can switch categories (tap water → bottled water; congestion turns open access rival).'],
+    ex:'The fish-lake demo: everyone grabs fish until it\'s gone, until property lines are drawn. Nogales, Arizona vs. Nogales, Sonora: same people and geography, very different incomes, because of institutions and property rights.',html:goodsTable},
+   {t:'The budget line',q:'Write the budget line equation and say what its slope means in words.',
+    pts:['<span class="formula">Px·x + Py·y = I</span>','Intercepts: I/Px (all x) and I/Py (all y).','Slope = <b>−Px/Py</b>: the relative price, i.e. how many units of y you give up for one more x (opportunity cost).'],
+    ex:'$50 to spend, apples $10, oranges $2 → max 5 apples or 25 oranges. Slope −5: each apple costs 5 oranges.',graph:'budget'},
+   {t:'Price changes',q:'If Px rises, what happens to the budget line, and what two forces does that set off?',
+    pts:['A price change <b>rotates</b> the line around the other intercept; an income change <b>shifts</b> it in parallel.','Higher Px → feasible set shrinks → purchasing power falls.','Two forces: x is relatively pricier (<b>substitution</b>), and you are poorer (<b>income</b>). Full treatment in Lecture 4.'],
+    ex:'A cigarette tax: you smoke less because they cost more, and you also cut other spending because you feel poorer.',graph:'rotate'},
+   {t:'Kinked budget lines',q:'Why does an in-kind transfer (food stamps or a gift) create a kink, and why might cash be better?',
+    pts:['Restrictions on what money can buy make the line non-straight.','Some bundles reachable with cash are unreachable with in-kind aid.','An unwanted gift wastes value: <b>deadweight loss</b> (more in Lecture 5).'],
+    ex:'Getting baggy jeans you\'ll never wear: you\'d have preferred the cash.',graph:'kink'},
+   {t:'Work–life budget line',q:'What is the slope of the leisure–consumption budget line, and what\'s it called?',
+    pts:['Two goods: rest (leisure) and consumption; 24 hours to split.','Max consumption = 24·W/P (work every hour).','Slope = <b>−W/P</b>, the <b>real wage</b>: the opportunity cost of an hour of rest.','Inflation that outpaces wages lowers W/P.'],
+    ex:'Another two-good trade-off: risk vs. return. Diversifying across stocks can improve the trade-off.',graph:'leisure'},
+   {t:'Preferences &\nindifference curves',q:'What does "rational" preferences mean, and why is the indifference curve bowed in?',
+    pts:['<b>Stable preferences</b>: tastes don\'t change; behavior changes because prices (explicit and implicit) change.','Rational = <b>complete</b> (can rank any bundles) + <b>transitive</b> (A ≻ B, B ≻ C ⇒ A ≻ C).','Indifference curve: bundles you like equally. Bowed-in shape = diminishing willingness to trade.'],
+    ex:'The professor cut sugar not because his taste changed but because he learned its hidden health cost. Bangkok vs. U.S.: same preferences, different prices → small homes + fancy food vs. big homes.',graph:'ic'}
+  ]},
+ {id:'l3',n:3,date:'Oct 6',title:'Utility & optimal choice',color:C.l3,
+  pos:[840,635],side:'right',
+  big:['Put budget line and preferences together: the best affordable bundle is where they\'re tangent.','The rule "equal bang for the buck" and the tangency rule are the same idea.'],
+  topics:[
+   {t:'Utility is a ranking',q:'Can we say a bundle with 200 utils makes you twice as happy as one with 100?',
+    pts:['Utility numbers only <b>rank</b> bundles (ordinal): higher = preferred.','They don\'t measure happiness; only the order matters.'],
+    ex:'10 housing + 74 food and 20 housing + 54 food can have the same utility: you\'re willing to trade one for the other.'},
+   {t:'Rules for drawing ICs',q:'Name four properties of indifference curves and why crossing is impossible.',
+    pts:['Downward sloping (more is better, so to keep utility constant you must trade).','<b>Never cross</b>: crossing breaks transitivity.','<b>Not thick</b>: a bundle with more of both must be strictly better.','<b>Convex</b> (bowed in) for typical goods.','Special case: <b>perfect substitutes</b> → straight line, constant trade rate.'],
+    ex:'Coke and Pepsi: take away 3 Cokes, give 3 Pepsis, and you\'re just as happy.',graph:'icshapes'},
+   {t:'MRS & marginal utility',q:'Show that the slope of an indifference curve equals MUx/MUy. Why does it get flatter?',
+    pts:['Along an IC: MUx·Δx + MUy·Δy = 0.','So slope = <b>−MUx/MUy</b> = <b>MRS</b>, the relative enjoyment of the goods.','<b>Diminishing marginal utility</b>: the more x you have, the less the next unit adds → curve flattens.'],
+    ex:'Five vanilla scoops and one chocolate: a sixth vanilla barely helps; you\'d give up a lot of vanilla for more chocolate.'},
+   {t:'Maximizing with a\nutility table',q:'Why is "go all-in on the good with the biggest total utility" the wrong method?',
+    pts:['Wrong way: think in totals and spend everything on one good, leaving leftover money unused.','Right way: buy <b>one unit at a time</b>, always picking the highest <b>marginal utility per dollar</b>.','Stop when money runs out; you end where MUx/Px = MUy/Py.'],
+    ex:'Going all-in on x got 295 utils. Comparing MU per dollar one unit at a time beats that.'},
+   {t:'The optimum:\ntangency',q:'State the two equivalent conditions for the utility-maximizing bundle.',
+    pts:['<span class="formula">MUx/Px = MUy/Py</span> (last dollar on each good gives equal satisfaction)','Rearranged: <span class="formula">MRS = MUx/MUy = Px/Py</span>','Budget line slope = what the <b>market</b> charges; IC slope = what <b>you</b> are willing to pay.','At the optimum the IC is tangent to the budget line. Not tangent → you can do better.'],
+    ex:'Milkshakes: if the shop gave you all vanilla, you\'d pay extra to swap some for chocolate. That gap between willingness to pay and price is the signal to trade.',graph:'tangency'}
+  ]},
+ {id:'l4',n:4,date:'Oct 8',title:'From choice to demand',color:C.l4,
+  pos:[400,635],side:'left',
+  big:['Change the price, re-optimize, record the new choice: connect those points and you\'ve derived the demand curve.','Every price change has a substitution effect and an income effect.'],
+  topics:[
+   {t:'Off the optimum?\nRe-optimize',q:'You\'d give up 6 y for 1 x, but the market charges 2 y per x. What should you do and why?',
+    pts:['Compare MRS (your willingness to pay) with Px/Py (market price).','MRS > Px/Py → x is a bargain to you → buy more x, less y.','MRS < Px/Py → buy less x.','When prices change, the old best choice is no longer best: re-optimize.'],
+    ex:'Pears $20, apples $10. Return 6 apples ($60) and buy 3 pears, when you only needed 1 pear to be equally happy. Higher indifference curve.',graph:'nontangent'},
+   {t:'Solving with an\nMRS function',q:'What are the two equations you solve to find the exact optimal bundle?',
+    pts:['<b>Equation 1</b>: MRS = Px/Py (tangency) → gives a ratio between x and y.','<b>Equation 2</b>: the budget line.','Two unknowns, two equations: substitute and solve.'],
+    ex:'Budget 10x + 5y = 45, MRS = x/(2y). Tangency: x/(2y) = 2 → x = 4y. Substitute: 10(4y) + 5y = 45 → y = 1, x = 4.'},
+   {t:'Deriving demand',q:'Explain why a point on the demand curve tells you willingness to pay.',
+    pts:['Vary Px, hold income and Py fixed; find the optimum each time; plot (quantity, price).','At each optimum MRS = Px/Py, so the price equals your dollar value of the last unit.','Demand slopes down because of <b>diminishing marginal utility</b>.'],
+    ex:'At Px = $20 you buy 4 (B); at Px = $5 you buy 10 (A). Connect B and A → demand curve.',graph:'demand'},
+   {t:'Consumer surplus',q:'Demand is P = 30 − 2x and the price is $10. How much consumer surplus is there?',
+    pts:['CS = willingness to pay − price actually paid, summed over all units.','Graphically: area under demand, above the price.'],
+    ex:'If you valued a unit at $20 and paid $5, that unit gave $15 of surplus.<br><br><b>Answer to the question:</b> at P = 10, x = 10. CS = ½ × 10 × (30 − 10) = <b>$100</b>.',graph:'cs'},
+   {t:'Market demand',q:'Two identical people each have P = 30 − 2x. What is market demand?',
+    pts:['Add individual demands <b>horizontally</b>: add quantities at each price.','Same price intercept, larger quantity → market demand is <b>flatter</b>.','Classic trap: about half the class missed this on a past multiple choice.'],
+    ex:'Each buys 15 at P = 0, so the market buys 30. Market demand: P = 30 − x.',graph:'market'},
+   {t:'Substitution &\nincome effects',q:'Px rises. Describe A → C and C → B. When can a price rise make you buy more x?',
+    pts:['Price rise → lower indifference curve (worse off).','<b>Compensated</b> (hypothetical) budget line: new prices, but enough money to stay on the old IC.','<b>Substitution effect</b> A → C: always away from the pricier good.','<b>Income effect</b> C → B: you\'re really poorer. Normal good → buy less; <b>inferior</b> good → buy more.'],
+    ex:'Eggs got expensive, so people switched to chicken for breakfast (substitution) and felt poorer (income). Inferior-good story: during the Great Depression people bought more cheap staples because they were poor.',graph:'subinc'}
+  ]}
+];
+
+const center={title:'How the four lectures connect',big:[
+  '<b>L1</b> sets the method: maximize, at the margin, subject to scarcity.',
+  '<b>L2</b> builds the constraint (budget line) and the preferences (indifference curves).',
+  '<b>L3</b> combines them: the optimum is where MRS = Px/Py.',
+  '<b>L4</b> changes prices to derive demand, consumer surplus, and the substitution and income effects.',
+  'Next up (previewed in class): deadweight loss from in-kind transfers and gifts.']};
+
+/* ======================= draw the map ======================= */
+const svg=document.getElementById('map'), NS='http://www.w3.org/2000/svg';
+const CX=620, CY=430;
+function el(tag,attrs,parent=svg){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent.appendChild(e);return e}
+function addLines(g,lines,x,y,size,weight,fill){
+  const lh=size*1.22, start=y-(lines.length-1)*lh/2;
+  lines.forEach((ln,i)=>{const t=el('text',{x,y:start+i*lh,'text-anchor':'middle','dominant-baseline':'middle','font-size':size,'font-weight':weight,fill},g);t.textContent=ln});
+}
+const edges=el('g',{}), nodesLayer=el('g',{});
+const PW=232;
+let activeG=null;
+
+// center → lecture edges
+lectures.forEach(L=>{
+  const [lx,ly]=L.pos;
+  el('path',{d:`M${CX} ${CY} C ${(CX+lx)/2} ${CY}, ${(CX+lx)/2} ${ly}, ${lx} ${ly}`,class:'edge',stroke:L.color,'stroke-width':7,opacity:.85},edges);
+});
+
+lectures.forEach(L=>{
+  const [lx,ly]=L.pos, n=L.topics.length, gap=64;
+  const colX = L.side==='left'? 160 : 1080;
+  const top = ly - (n-1)*gap/2;
+  L.topics.forEach((T,i)=>{
+    const ty=top+i*gap;
+    const innerX = L.side==='left'? colX+PW/2 : colX-PW/2;
+    const startX = L.side==='left'? lx-100 : lx+100;
+    el('path',{d:`M${startX} ${ly} C ${(startX+innerX)/2} ${ly}, ${(startX+innerX)/2} ${ty}, ${innerX} ${ty}`,class:'edge',stroke:L.color,'stroke-width':2.6,opacity:.7},edges);
+    const lines=T.t.split('\n'); const h=lines.length>1?52:40;
+    const g=el('g',{class:'node',tabindex:0,role:'button','aria-label':`Lecture ${L.n}: ${T.t.replace('\n',' ')}`},nodesLayer);
+    el('rect',{class:'pill',x:colX-PW/2,y:ty-h/2,width:PW,height:h,rx:h/2,fill:'#fff',stroke:L.color,'stroke-width':1.8},g);
+    addLines(g,lines,colX,ty+1,15.5,400,'#1E2B45');
+    bind(g,()=>openTopic(L,T),L.color);
+  });
+  // lecture node
+  const g=el('g',{class:'node',tabindex:0,role:'button','aria-label':`Lecture ${L.n} overview: ${L.title}`},nodesLayer);
+  el('rect',{class:'pill',x:lx-118,y:ly-46,width:236,height:92,rx:22,fill:L.color,stroke:L.color,'stroke-width':2},g);
+  const d=el('text',{x:lx,y:ly-22,'text-anchor':'middle','font-size':21,fill:'#fff','font-family':'Caveat, cursive','font-weight':700},g); d.textContent=`Lecture ${L.n} · ${L.date}`;
+  const words=L.title.split(' '); let a=[],b=[]; words.forEach(w=>(a.join(' ').length<14?a:b).push(w));
+  addLines(g,[a.join(' '),b.join(' ')].filter(Boolean),lx,ly+14,17,700,'#fff');
+  bind(g,()=>openLecture(L),L.color);
+});
+
+// center node
+const cg=el('g',{class:'node',tabindex:0,role:'button','aria-label':'How the lectures connect'},nodesLayer);
+el('circle',{cx:CX,cy:CY,r:86,fill:'#1E2B45'},cg);
+el('circle',{cx:CX,cy:CY,r:78,fill:'none',stroke:'#fff','stroke-width':1.2,'stroke-dasharray':'3 5'},cg);
+addLines(cg,['Econ 10000','consumer','theory'],CX,CY-4,19,700,'#fff');
+const ct=el('text',{x:CX,y:CY+50,'text-anchor':'middle','font-size':17,fill:'#F2D79B','font-family':'Caveat, cursive'},cg); ct.textContent='how it connects';
+bind(cg,openCenter,'#1E2B45');
+
+function bind(g,fn,color){
+  const go=()=>{ if(activeG) activeG.classList.remove('active'); activeG=g; g.classList.add('active'); fn(); };
+  g.addEventListener('click',go);
+  g.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}});
+}
+
+/* ======================= outline for small screens ======================= */
+const out=document.getElementById('outline');
+const cBtn=document.createElement('button'); cBtn.textContent='How the four lectures connect';
+cBtn.style.cssText='width:100%;margin-bottom:14px;font:inherit;padding:10px;border-radius:8px;border:none;background:#1E2B45;color:#fff;cursor:pointer';
+cBtn.onclick=openCenter; out.appendChild(cBtn);
+lectures.forEach(L=>{
+  const s=document.createElement('section'); s.style.setProperty('--c',L.color);
+  s.innerHTML=`<div class="date">Lecture ${L.n} · ${L.date}</div><h2>${L.title}</h2><ul></ul>`;
+  const ul=s.querySelector('ul');
+  const ov=document.createElement('li'); ov.innerHTML='<button><b>Overview</b></button>'; ov.firstChild.onclick=()=>openLecture(L); ul.appendChild(ov);
+  L.topics.forEach(T=>{const li=document.createElement('li'); const b=document.createElement('button'); b.textContent=T.t.replace('\n',' '); b.onclick=()=>openTopic(L,T); li.appendChild(b); ul.appendChild(li)});
+  out.appendChild(s);
+});
+
+/* ======================= panel ======================= */
+const panel=document.getElementById('panel'), body=document.getElementById('panelBody');
+let quiz=false;
+const quizBtn=document.getElementById('quiz');
+quizBtn.onclick=()=>{quiz=!quiz; quizBtn.setAttribute('aria-pressed',quiz)};
+document.getElementById('close').onclick=closePanel;
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closePanel()});
+function closePanel(){panel.classList.remove('open'); if(activeG){activeG.classList.remove('active'); activeG.focus(); activeG=null}}
+function show(color,html){panel.style.setProperty('--c',color); body.innerHTML=html; panel.classList.add('open'); panel.scrollTop=0;}
+
+function openTopic(L,T){
+  const notes=`
+    <h3>Key ideas</h3><ul>${T.pts.map(p=>`<li>${p}</li>`).join('')}</ul>
+    ${T.html?`<h3>The 2×2</h3>${T.html}`:''}
+    ${T.graph?`<h3>Sketch it</h3><div class="graph">${graphs[T.graph]()}</div>`:''}
+    <h3>From class</h3><div class="example">${T.ex}</div>`;
+  const q=`<div class="q">${T.q}</div>`;
+  show(L.color,`<div class="date">Lecture ${L.n} · ${L.date}</div><h2>${T.t.replace('\n',' ')}</h2>
+    ${quiz?`${q}<p style="color:#56627A;font-size:.92rem">Answer it out loud or on paper first.</p><button class="reveal" id="rev">Reveal notes</button><div class="answer" id="ans" hidden>${notes}</div>`
+          :`${notes}<h3>Test yourself</h3>${q}`}`);
+  const r=document.getElementById('rev'); if(r) r.onclick=()=>{document.getElementById('ans').hidden=false; r.remove()};
+}
+function openLecture(L){
+  show(L.color,`<div class="date">Lecture ${L.n} · ${L.date}</div><h2>${L.title}</h2>
+    <h3>Big picture</h3><ul>${L.big.map(b=>`<li>${b}</li>`).join('')}</ul>
+    <h3>Topics in this lecture</h3><ul class="topics-list">${L.topics.map((T,i)=>`<li><button data-i="${i}">${T.t.replace('\n',' ')}</button></li>`).join('')}</ul>`);
+  body.querySelectorAll('.topics-list button').forEach(b=>b.onclick=()=>openTopic(L,L.topics[b.dataset.i]));
+}
+function openCenter(){
+  show('#1E2B45',`<div class="date" style="color:#56627A">Lectures 1–4</div><h2>${center.title}</h2><ul>${center.big.map(b=>`<li>${b}</li>`).join('')}</ul>
+  <h3 style="color:#1E2B45">The one formula to know cold</h3><p class="formula">MUx/Px = MUy/Py  ⇔  MRS = Px/Py</p>`);
+}
+</script>
+</body>
+</html>
