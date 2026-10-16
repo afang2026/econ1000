@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Econ 10000: consumer theory practice lab</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Fraunces:opsz,wght@9..144,600&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme:light;
+  --paper:#F5F8FA; --sheet:#FFFFFF; --rule:#D3DDE6;
+  --ink:#1E2B45; --ink-soft:#56627A; --accent:#4C51BF; --focus:#F2B705;
+  --old:#4C51BF; --new:#C2410C; --hicks:#0F766E; --good:#15803D; --bad:#B91C1C;
+  --fill:rgba(76,81,191,.14);
+  --body:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --display:'Fraunces',Georgia,serif;
+}
+@media (prefers-color-scheme:dark){
+  :root{color-scheme:dark; --paper:#152036; --sheet:#1B2741; --rule:#31415F; --ink:#E6ECF5; --ink-soft:#A7B3C9; --accent:#9A9FF5;
+    --old:#9A9FF5; --new:#FB923C; --hicks:#2DD4BF; --good:#4ADE80; --bad:#F87171; --fill:rgba(154,159,245,.18)}
+}
+*{box-sizing:border-box}
+body{margin:0; font-family:var(--body); color:var(--ink); background:var(--paper); line-height:1.5}
+:focus-visible{outline:3px solid var(--focus); outline-offset:2px; border-radius:6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+
+header{padding:28px 20px 8px; max-width:1100px; margin:0 auto}
+header h1{font-family:var(--display); font-weight:600; font-size:clamp(1.6rem,4vw,2.4rem); margin:0 0 4px; letter-spacing:-.015em}
+header p{margin:0; color:var(--ink-soft); max-width:62ch}
+header a{color:inherit}
+
+nav.modes{position:sticky; top:0; z-index:5; background:var(--paper); border-bottom:1px solid var(--rule)}
+nav.modes div{max-width:1100px; margin:0 auto; padding:10px 20px; display:flex; gap:6px; overflow-x:auto}
+nav.modes button{font:inherit; font-size:.92rem; white-space:nowrap; color:var(--ink); background:transparent; border:1.5px solid var(--ink); border-radius:999px; padding:5px 14px; cursor:pointer}
+nav.modes button[aria-selected="true"]{background:var(--ink); color:var(--paper)}
+
+main{max-width:1100px; margin:0 auto; padding:20px}
+section[hidden]{display:none}
+h2{font-family:var(--display); font-weight:600; font-size:1.45rem; margin:0 0 6px}
+.lede{color:var(--ink-soft); margin:0 0 18px; max-width:68ch}
+
+.lab{display:grid; grid-template-columns:minmax(0,1.5fr) minmax(260px,1fr); gap:20px; align-items:start}
+@media (max-width:820px){.lab{grid-template-columns:1fr}}
+.plot{background:var(--sheet); border:1px solid var(--rule); border-radius:10px; padding:8px}
+.plot svg{width:100%; height:auto; display:block}
+.panel{background:var(--sheet); border:1px solid var(--rule); border-radius:10px; padding:16px}
+.panel h3{font-size:1rem; margin:0 0 10px}
+label.slider{display:block; margin:0 0 12px; font-size:.92rem}
+label.slider span{display:flex; justify-content:space-between}
+label.slider i{font-style:normal}
+label.slider b{font-variant-numeric:tabular-nums}
+input[type=range]{width:100%; accent-color:var(--accent)}
+.check{display:flex; gap:8px; align-items:center; margin:4px 0 12px; font-size:.92rem}
+.readout{border-top:1px solid var(--rule); margin-top:10px; padding-top:10px; font-size:.92rem; font-variant-numeric:tabular-nums}
+.readout p{margin:0 0 6px}
+.key{display:inline-block; width:14px; height:3px; vertical-align:middle; margin-right:6px; border-radius:2px}
+.note{font-size:.88rem; color:var(--ink-soft); margin-top:10px}
+.ask{margin-top:14px; padding:12px; border-left:3px solid var(--accent); background:var(--fill); border-radius:0 8px 8px 0; font-size:.93rem}
+
+.btn{font:inherit; font-size:.95rem; color:var(--paper); background:var(--ink); border:1.5px solid var(--ink); border-radius:8px; padding:8px 14px; cursor:pointer}
+.btn.ghost{color:var(--ink); background:transparent}
+.btn:disabled{opacity:.4; cursor:not-allowed}
+.row{display:flex; flex-wrap:wrap; gap:8px; align-items:center}
+
+table.mu{border-collapse:collapse; width:100%; font-variant-numeric:tabular-nums; font-size:.95rem}
+table.mu th, table.mu td{border-bottom:1px solid var(--rule); padding:6px 8px; text-align:center}
+table.mu th:first-child, table.mu td:first-child{text-align:left}
+table.mu td.bought{background:var(--fill); font-weight:700}
+table.mu td.next{outline:2px dashed var(--accent); outline-offset:-3px}
+.status{font-size:1rem; margin:12px 0}
+.status strong{font-variant-numeric:tabular-nums}
+.verdict{padding:10px 12px; border-radius:8px; margin-top:10px}
+.verdict.ok{border:1.5px solid var(--good)}
+.verdict.no{border:1.5px solid var(--bad)}
+
+.quiz-card, .flash{background:var(--sheet); border:1px solid var(--rule); border-radius:10px; padding:20px; max-width:720px}
+.quiz-meta{display:flex; justify-content:space-between; color:var(--ink-soft); font-size:.9rem; margin-bottom:8px}
+.quiz-q{font-size:1.1rem; margin:0 0 14px}
+.opts{display:grid; gap:8px}
+.opts button{font:inherit; text-align:left; color:var(--ink); background:transparent; border:1.5px solid var(--rule); border-radius:8px; padding:10px 12px; cursor:pointer}
+.opts button:hover:not(:disabled){border-color:var(--ink)}
+.opts button.right{border-color:var(--good); background:color-mix(in srgb, var(--good) 12%, transparent)}
+.opts button.wrong{border-color:var(--bad); background:color-mix(in srgb, var(--bad) 10%, transparent)}
+.opts button:disabled{cursor:default}
+.explain{margin-top:14px; font-size:.95rem}
+.filters{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:14px}
+.filters button{font:inherit; font-size:.85rem; color:var(--ink-soft); background:transparent; border:1px solid var(--rule); border-radius:999px; padding:3px 10px; cursor:pointer}
+.filters button[aria-pressed="true"]{color:var(--paper); background:var(--accent); border-color:var(--accent)}
+
+.flash{min-height:230px; display:flex; flex-direction:column}
+.flash .face{flex:1; display:flex; flex-direction:column; justify-content:center}
+.flash .front{font-family:var(--display); font-weight:600; font-size:1.35rem; margin:0}
+.flash .back{margin:14px 0 0; padding-top:14px; border-top:1px solid var(--rule)}
+.flash .back[hidden]{display:none}
+.done{font-size:1.05rem}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Consumer theory practice lab</h1>
+  <p>Lectures 1 to 6, built for the Nov 3 midterm. Move the sliders, spend the dollars, then test yourself. <a href="../">Back to the mind map and notes</a></p>
+</header>
+
+<nav class="modes" aria-label="Practice modes">
+  <div role="tablist">
+    <button role="tab" data-tab="choice" aria-selected="true">Budget and choice</button>
+    <button role="tab" data-tab="dollar" aria-selected="false">Spend a dollar</button>
+    <button role="tab" data-tab="demand" aria-selected="false">Demand and elasticity</button>
+    <button role="tab" data-tab="quiz" aria-selected="false">Quiz</button>
+    <button role="tab" data-tab="cards" aria-selected="false">Flashcards</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ============ BUDGET AND CHOICE ============ -->
+<section id="choice" role="tabpanel">
+  <h2>Budget line, indifference curves, and the price-change split</h2>
+  <p class="lede">The optimum sits where the indifference curve is tangent to the budget line: MU<sub>x</sub>/MU<sub>y</sub> = P<sub>x</sub>/P<sub>y</sub>. Raise P<sub>x</sub> to see the move from A to C (substitution) and C to B (income).</p>
+  <div class="lab">
+    <div class="plot"><svg id="bcSvg" viewBox="0 0 520 440" role="img" aria-label="Budget line and indifference curve diagram"></svg></div>
+    <div class="panel">
+      <h3>Inputs</h3>
+      <label class="slider"><span><i>Income I</i> <b id="vI"></b></span><input type="range" id="sI" min="40" max="400" step="10" value="200"></label>
+      <label class="slider"><span><i>Price of X, P<sub>x</sub></i> <b id="vPx"></b></span><input type="range" id="sPx" min="2" max="40" step="1" value="10"></label>
+      <label class="slider"><span><i>Price of Y, P<sub>y</sub></i> <b id="vPy"></b></span><input type="range" id="sPy" min="2" max="40" step="1" value="10"></label>
+      <label class="slider"><span><i>How much they like X (share of budget)</i> <b id="vA"></b></span><input type="range" id="sA" min="0.2" max="0.8" step="0.05" value="0.5"></label>
+      <label class="check"><input type="checkbox" id="cShift" checked> Show a price increase in X</label>
+      <label class="slider" id="newPxWrap"><span><i>New P<sub>x</sub></i> <b id="vPx2"></b></span><input type="range" id="sPx2" min="2" max="60" step="1" value="20"></label>
+      <div class="readout" id="bcOut"></div>
+      <p class="note">Preferences here are Cobb-Douglas, U = x<sup>a</sup>y<sup>1−a</sup>, so X is always a normal good. For an inferior good the income effect would point the other way and the order becomes A, B, C.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ SPEND A DOLLAR ============ -->
+<section id="dollar" role="tabpanel" hidden>
+  <h2>Spend each dollar where it buys the most utility</h2>
+  <p class="lede">The Lecture 3 example. You have $7. Buy one unit at a time. The best next purchase is the one with the highest marginal utility per dollar, MU/P.</p>
+  <div class="lab">
+    <div class="panel">
+      <div class="row" style="margin-bottom:12px">
+        <span>Prices:</span>
+        <button class="btn ghost" id="p11" aria-pressed="true">P<sub>x</sub> = $1, P<sub>y</sub> = $1</button>
+        <button class="btn ghost" id="p21" aria-pressed="false">P<sub>x</sub> = $2, P<sub>y</sub> = $1</button>
+      </div>
+      <table class="mu" id="muTable"></table>
+      <p class="status" id="muStatus"></p>
+      <div class="row">
+        <button class="btn" id="buyX">Buy one X</button>
+        <button class="btn" id="buyY">Buy one Y</button>
+        <button class="btn ghost" id="muReset">Start over</button>
+      </div>
+      <div id="muVerdict"></div>
+    </div>
+    <div class="panel">
+      <h3>Before you click</h3>
+      <div class="ask">If you put everything into X because its first unit gives 100, what total utility do you get? Compare it with what you reach by following MU/P each step.</div>
+      <div class="ask">Multiply every MU by 10. Does the bundle you pick change? Why does that tell you utility is ordinal?</div>
+      <div class="ask">When P<sub>x</sub> doubles, which column should you divide by 2 before comparing?</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DEMAND AND ELASTICITY ============ -->
+<section id="demand" role="tabpanel" hidden>
+  <h2>Linear demand: elasticity, revenue, consumer surplus</h2>
+  <p class="lede">For P = A − B·Q, own-price elasticity is |E| = (1/B)(P/Q). It falls from infinity at the top to 1 at the midpoint to 0 at the bottom. Revenue peaks where |E| = 1.</p>
+  <div class="lab">
+    <div class="plot"><svg id="dSvg" viewBox="0 0 520 440" role="img" aria-label="Linear demand with consumer surplus and revenue"></svg></div>
+    <div class="panel">
+      <h3>Inputs</h3>
+      <label class="slider"><span><i>Intercept A</i> <b id="vDA"></b></span><input type="range" id="sDA" min="10" max="60" step="1" value="30"></label>
+      <label class="slider"><span><i>Slope B</i> <b id="vDB"></b></span><input type="range" id="sDB" min="0.5" max="4" step="0.5" value="2"></label>
+      <label class="slider"><span><i>Price P</i> <b id="vDP"></b></span><input type="range" id="sDP" min="0" max="30" step="0.5" value="10"></label>
+      <label class="check"><input type="checkbox" id="cTwo"> Add a second identical consumer (market demand)</label>
+      <div class="readout" id="dOut"></div>
+      <div class="ask">Start at P = 20. Cut the price a little. Does revenue go up or down? Now try the same thing at P = 8.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="quiz" role="tabpanel" hidden>
+  <h2>Quiz</h2>
+  <p class="lede">Questions are built around the exam traps from lecture. Pick an answer to see why it's right or wrong. Missed questions come back at the end of the round.</p>
+  <div class="filters" id="quizFilters" aria-label="Filter by topic"></div>
+  <div class="quiz-card" id="quizCard"></div>
+</section>
+
+<!-- ============ FLASHCARDS ============ -->
+<section id="cards" role="tabpanel" hidden>
+  <h2>Flashcards</h2>
+  <p class="lede">Say the answer out loud before you flip. Cards you mark "Again" come back a few cards later. Cards you know drop out of the deck.</p>
+  <div class="flash" id="flash"></div>
+</section>
+
+</main>
+
+<script>
+(function(){
+"use strict";
+var $ = function(id){ return document.getElementById(id); };
+var NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, text){
+  var e = document.createElementNS(NS, tag);
+  for (var k in attrs) e.setAttribute(k, attrs[k]);
+  if (text != null) e.textContent = text;
+  return e;
+}
+function css(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+function fmt(n, d){ d = d == null ? 2 : d; return (Math.round(n * Math.pow(10,d)) / Math.pow(10,d)).toString(); }
+function money(n){ return "$" + fmt(n, 2); }
+
+/* ---------- tabs ---------- */
+var tabs = [].slice.call(document.querySelectorAll('[role="tab"]'));
+function openTab(name){
+  tabs.forEach(function(t){
+    var on = t.dataset.tab === name;
+    t.setAttribute('aria-selected', String(on));
+    $(t.dataset.tab).hidden = !on;
+  });
+  if (location.hash !== '#' + name) history.replaceState(null, '', '#' + name);
+}
+tabs.forEach(function(t){ t.addEventListener('click', function(){ openTab(t.dataset.tab); }); });
+var startTab = location.hash.replace('#','');
+if (tabs.some(function(t){ return t.dataset.tab === startTab; })) openTab(startTab);
+
+/* ---------- plotting frame ---------- */
+var W = 520, H = 440, L = 54, R = 20, T = 20, B = 46;
+function frame(svg, xmax, ymax, xl, yl){
+  while (svg.firstChild) svg.removeChild(svg.firstChild);
+  var ink = css('--ink'), soft = css('--ink-soft'), rule = css('--rule');
+  var sx = function(x){ return L + x / xmax * (W - L - R); };
+  var sy = function(y){ return H - B - y / ymax * (H - T - B); };
+  for (var i = 1; i <= 4; i++){
+    svg.appendChild(el('line', {x1:sx(xmax*i/4), x2:sx(xmax*i/4), y1:sy(0), y2:sy(ymax), stroke:rule, 'stroke-width':1}));
+    svg.appendChild(el('line', {x1:sx(0), x2:sx(xmax), y1:sy(ymax*i/4), y2:sy(ymax*i/4), stroke:rule, 'stroke-width':1}));
+    svg.appendChild(el('text', {x:sx(xmax*i/4), y:H-B+18, 'text-anchor':'middle', 'font-size':12, fill:soft}, fmt(xmax*i/4,1)));
+    svg.appendChild(el('text', {x:L-8, y:sy(ymax*i/4)+4, 'text-anchor':'end', 'font-size':12, fill:soft}, fmt(ymax*i/4,1)));
+  }
+  svg.appendChild(el('line', {x1:sx(0), x2:sx(xmax), y1:sy(0), y2:sy(0), stroke:ink, 'stroke-width':1.5}));
+  svg.appendChild(el('line', {x1:sx(0), x2:sx(0), y1:sy(0), y2:sy(ymax), stroke:ink, 'stroke-width':1.5}));
+  svg.appendChild(el('text', {x:sx(xmax), y:H-8, 'text-anchor':'end', 'font-size':13, fill:ink}, xl));
+  svg.appendChild(el('text', {x:12, y:T+4, 'font-size':13, fill:ink, transform:'rotate(-90 12 ' + (T+4) + ')', 'text-anchor':'end'}, yl));
+  var defs = el('defs',{}), cp = el('clipPath',{id:svg.id+'Clip'});
+  cp.appendChild(el('rect',{x:L, y:T, width:W-L-R, height:H-T-B}));
+  defs.appendChild(cp); svg.appendChild(defs);
+  var g = el('g',{'clip-path':'url(#'+svg.id+'Clip)'}); svg.appendChild(g);
+  var lab = el('g',{}); svg.appendChild(lab);
+  return {sx:sx, sy:sy, xmax:xmax, ymax:ymax, g:g, lab:lab};
+}
+function line(svg, f, x1, y1, x2, y2, color, w, dash){
+  var a = {x1:f.sx(x1), y1:f.sy(y1), x2:f.sx(x2), y2:f.sy(y2), stroke:color, 'stroke-width':w||2.5, 'stroke-linecap':'round'};
+  if (dash) a['stroke-dasharray'] = dash;
+  f.g.appendChild(el('line', a));
+}
+function dot(svg, f, x, y, color, label, dx, dy){
+  f.lab.appendChild(el('circle', {cx:f.sx(x), cy:f.sy(y), r:5.5, fill:color, stroke:css('--sheet'), 'stroke-width':2}));
+  if (label) f.lab.appendChild(el('text', {x:f.sx(x)+(dx||8), y:f.sy(y)+(dy||-8), 'font-size':15, 'font-weight':700, fill:color}, label));
+}
+function icurve(svg, f, U, a, color, dash){
+  var pts = [], n = 120;
+  for (var i = 1; i <= n; i++){
+    var x = f.xmax * i / n;
+    var y = Math.pow(U / Math.pow(x, a), 1/(1-a));
+    if (y <= f.ymax * 1.02) pts.push(f.sx(x).toFixed(1) + ',' + f.sy(Math.min(y, f.ymax)).toFixed(1));
+  }
+  var p = {points:pts.join(' '), fill:'none', stroke:color, 'stroke-width':2};
+  if (dash) p['stroke-dasharray'] = dash;
+  f.g.appendChild(el('polyline', p));
+}
+
+/* ---------- budget and choice ---------- */
+function drawChoice(){
+  var I = +$('sI').value, Px = +$('sPx').value, Py = +$('sPy').value, a = +$('sA').value;
+  var shift = $('cShift').checked, Px2 = +$('sPx2').value;
+  $('vI').textContent = '$' + I; $('vPx').textContent = '$' + Px; $('vPy').textContent = '$' + Py;
+  $('vA').textContent = fmt(a,2); $('vPx2').textContent = '$' + Px2;
+  $('newPxWrap').style.display = shift ? '' : 'none';
+  var b = 1 - a;
+  var xA = a*I/Px, yA = b*I/Py, U0 = Math.pow(xA,a)*Math.pow(yA,b);
+  var lo = Math.min(Px, shift ? Px2 : Px);
+  var xmax = Math.ceil(I/lo * 1.08), ymax = Math.ceil(I/Py * 1.08);
+  var svg = $('bcSvg'), f = frame(svg, xmax, ymax, 'Good X', 'Good Y');
+  var cOld = css('--old'), cNew = css('--new'), cH = css('--hicks');
+
+  icurve(svg, f, U0, a, cOld);
+  line(svg, f, 0, I/Py, I/Px, 0, cOld);
+  dot(svg, f, xA, yA, cOld, 'A');
+
+  var html = '<p><span class="key" style="background:'+cOld+'"></span>Optimum A: x = ' + fmt(xA) + ', y = ' + fmt(yA) + '</p>' +
+             '<p>Intercepts: ' + fmt(I/Px) + ' of X or ' + fmt(I/Py) + ' of Y. Budget slope = −P<sub>x</sub>/P<sub>y</sub> = ' + fmt(-Px/Py) + '</p>' +
+             '<p>At A, MRS = MU<sub>x</sub>/MU<sub>y</sub> = ' + fmt((a/b)*(yA/xA)) + ', which equals P<sub>x</sub>/P<sub>y</sub>.</p>';
+
+  if (shift && Px2 !== Px){
+    var xB = a*I/Px2, yB = b*I/Py, U1 = Math.pow(xB,a)*Math.pow(yB,b);
+    var eH = U0 * Math.pow(Px2/a, a) * Math.pow(Py/b, b);   // Hicks: cost of reaching U0 at new prices
+    var xC = a*eH/Px2, yC = b*eH/Py;
+    var eS = Px2*xA + Py*yA;                               // Slutsky / CPI: cost of old bundle
+    icurve(svg, f, U1, a, cNew);
+    line(svg, f, 0, I/Py, I/Px2, 0, cNew);
+    line(svg, f, 0, eH/Py, eH/Px2, 0, cH, 2, '6 5');
+    dot(svg, f, xC, yC, cH, 'C', 8, -8);
+    dot(svg, f, xB, yB, cNew, 'B', -20, 18);
+    var up = Px2 > Px;
+    html += '<p><span class="key" style="background:'+cNew+'"></span>New optimum B: x = ' + fmt(xB) + ', y = ' + fmt(yB) + '</p>' +
+            '<p><span class="key" style="background:'+cH+'"></span>Hicksian point C: x = ' + fmt(xC) + ' (new prices, old utility)</p>' +
+            '<p>Substitution effect A→C: ' + fmt(xC - xA) + ' units of X<br>Income effect C→B: ' + fmt(xB - xC) + '<br>Total A→B: ' + fmt(xB - xA) + '</p>' +
+            '<p>Compensation to keep the old life:<br>CPI-style (buy old bundle A): ' + money(eS) + '<br>Hicks (reach old curve): ' + money(eH) + '<br>' +
+            (up ? 'CPI overcompensates by ' + money(eS - eH) + '.' : 'With a price cut, CPI-style still overstates what is needed.') + '</p>';
+  }
+  $('bcOut').innerHTML = html;
+}
+['sI','sPx','sPy','sA','sPx2','cShift'].forEach(function(id){ $(id).addEventListener('input', drawChoice); });
+
+/* ---------- spend a dollar ---------- */
+var MUX = [100,60,30,10,5], MUY = [50,40,30,20,10], BUDGET = 7;
+var mu = {px:1, py:1, x:0, y:0};
+function bestBundle(){
+  var best = {u:-1};
+  for (var x = 0; x <= 5; x++) for (var y = 0; y <= 5; y++){
+    if (x*mu.px + y*mu.py > BUDGET) continue;
+    var u = MUX.slice(0,x).reduce(function(s,v){return s+v;},0) + MUY.slice(0,y).reduce(function(s,v){return s+v;},0);
+    if (u > best.u) best = {x:x, y:y, u:u};
+  }
+  return best;
+}
+function utilNow(){ return MUX.slice(0,mu.x).reduce(function(s,v){return s+v;},0) + MUY.slice(0,mu.y).reduce(function(s,v){return s+v;},0); }
+function drawMU(){
+  var left = BUDGET - mu.x*mu.px - mu.y*mu.py;
+  var h = '<tr><th>Unit</th>'; for (var i = 1; i <= 5; i++) h += '<th>' + i + '</th>'; h += '</tr>';
+  function row(name, arr, n, p){
+    var r = '<tr><td>MU<sub>' + name + '</sub>' + (p !== 1 ? ' (MU/P)' : '') + '</td>';
+    arr.forEach(function(v, i){
+      var cls = i < n ? 'bought' : (i === n ? 'next' : '');
+      r += '<td class="' + cls + '">' + v + (p !== 1 ? ' <span style="color:var(--ink-soft)">(' + fmt(v/p,1) + ')</span>' : '') + '</td>';
+    });
+    return r + '</tr>';
+  }
+  $('muTable').innerHTML = h + row('x', MUX, mu.x, mu.px) + row('y', MUY, mu.y, mu.py);
+  $('muStatus').innerHTML = 'Bundle: <strong>' + mu.x + 'X + ' + mu.y + 'Y</strong>. Money left: <strong>$' + left + '</strong>. Total utility: <strong>' + utilNow() + '</strong>';
+  $('buyX').disabled = mu.x >= 5 || left < mu.px;
+  $('buyY').disabled = mu.y >= 5 || left < mu.py;
+  var v = $('muVerdict');
+  if ($('buyX').disabled && $('buyY').disabled){
+    var b = bestBundle();
+    if (utilNow() >= b.u) v.innerHTML = '<div class="verdict ok">That is the best you can do with $7: utility ' + b.u + '. At this bundle the last dollar on each good bought about the same MU.</div>';
+    else v.innerHTML = '<div class="verdict no">You reached ' + utilNow() + '. Another bundle gets more. Look back at a step where you bought the good with the lower MU/P. Try again before peeking.</div>';
+  } else v.innerHTML = '';
+}
+function setPrices(px){
+  mu = {px:px, py:1, x:0, y:0};
+  $('p11').setAttribute('aria-pressed', String(px===1)); $('p21').setAttribute('aria-pressed', String(px===2));
+  $('p11').classList.toggle('ghost', px!==1); $('p21').classList.toggle('ghost', px!==2);
+  drawMU();
+}
+$('buyX').addEventListener('click', function(){ mu.x++; drawMU(); });
+$('buyY').addEventListener('click', function(){ mu.y++; drawMU(); });
+$('muReset').addEventListener('click', function(){ setPrices(mu.px); });
+$('p11').addEventListener('click', function(){ setPrices(1); });
+$('p21').addEventListener('click', function(){ setPrices(2); });
+
+/* ---------- demand and elasticity ---------- */
+function drawDemand(){
+  var A = +$('sDA').value, Bs = +$('sDB').value, two = $('cTwo').checked;
+  var sP = $('sDP'); sP.max = A; if (+sP.value > A) sP.value = A;
+  var P = +sP.value;
+  var Bm = two ? Bs/2 : Bs;              // market slope halves with two identical consumers
+  $('vDA').textContent = A; $('vDB').textContent = Bs; $('vDP').textContent = '$' + P;
+  var Q = Math.max(0, (A - P)/Bm);
+  var Qmax = A/Bm, xmax = Math.ceil(A/Bs*2*1.05), ymax = Math.ceil(A*1.08);
+  var svg = $('dSvg'), f = frame(svg, xmax, ymax, 'Quantity', 'Price');
+  var cOld = css('--old'), cNew = css('--new'), cH = css('--hicks'), soft = css('--ink-soft');
+
+  // revenue rectangle and CS triangle
+  if (Q > 0){
+    f.g.appendChild(el('rect', {x:f.sx(0), y:f.sy(P), width:f.sx(Q)-f.sx(0), height:f.sy(0)-f.sy(P), fill:cH, opacity:.16}));
+    f.g.appendChild(el('polygon', {points:[f.sx(0)+','+f.sy(A), f.sx(0)+','+f.sy(P), f.sx(Q)+','+f.sy(P)].join(' '), fill:cOld, opacity:.22}));
+  }
+  if (two) line(svg, f, 0, A, A/Bs, 0, soft, 2, '5 5');
+  line(svg, f, 0, A, Qmax, 0, cOld);
+  line(svg, f, 0, A/2, Qmax/2, A/2, soft, 1, '3 4');
+  line(svg, f, Qmax/2, 0, Qmax/2, A/2, soft, 1, '3 4');
+  svg.appendChild(el('text', {x:f.sx(Qmax/2)+6, y:f.sy(A/2)-8, 'font-size':12, fill:soft}, 'midpoint, |E| = 1'));
+  svg.appendChild(el('text', {x:f.sx(Qmax*0.12), y:f.sy(A*0.93), 'font-size':12, fill:soft}, 'elastic'));
+  svg.appendChild(el('text', {x:f.sx(Qmax*0.72), y:f.sy(A*0.16), 'font-size':12, fill:soft}, 'inelastic'));
+  if (Q > 0) dot(svg, f, Q, P, cNew, '', 0, 0);
+
+  var E = Q > 0 ? (1/Bm)*(P/Q) : Infinity;
+  var region = Q === 0 ? 'top of the curve (no one buys)' : P === 0 ? 'perfectly inelastic point' : Math.abs(E-1) < 0.01 ? 'unit elastic' : E > 1 ? 'elastic' : 'inelastic';
+  var cs = 0.5 * Q * (A - P);
+  var html = '<p>' + (two ? 'Market demand: P = ' + A + ' − ' + fmt(Bm) + 'Q (each person: P = ' + A + ' − ' + Bs + 'q)' : 'Demand: P = ' + A + ' − ' + Bs + 'Q') + '</p>' +
+             '<p>Quantity Q = ' + fmt(Q) + '</p>' +
+             '<p>|E| = (1/' + fmt(Bm) + ')(' + P + '/' + fmt(Q) + ') = ' + (isFinite(E) ? fmt(E) : '∞') + ', ' + region + '</p>' +
+             '<p><span class="key" style="background:'+cH+';opacity:.6"></span>Revenue P·Q = ' + money(P*Q) + ' (max ' + money(A*Qmax/4) + ' at P = ' + fmt(A/2) + ')</p>' +
+             '<p><span class="key" style="background:'+cOld+';opacity:.6"></span>Consumer surplus = ½ · ' + fmt(Q) + ' · ' + fmt(A-P) + ' = ' + money(cs) + '</p>';
+  if (two) html += '<p class="note">Adding quantities horizontally makes the market curve flatter: same price intercept, twice the quantity at every price.</p>';
+  $('dOut').innerHTML = html;
+}
+['sDA','sDB','sDP','cTwo'].forEach(function(id){ $(id).addEventListener('input', drawDemand); });
+
+/* ---------- quiz ---------- */
+var QUIZ = [
+ {t:'Indifference curves', q:'The slope of an indifference curve (in absolute value) equals:', o:['MU_x / MU_y','MU_y / MU_x','P_x / P_y','The marginal utility of income'], a:0,
+  e:'Along a curve utility is constant: MU_x·dx + MU_y·dy = 0, so dy/dx = −MU_x/MU_y. P_x/P_y is the budget slope. The two only match at the optimum. MU_y/MU_x is the trap from lecture.'},
+ {t:'Budget line', q:'I = $50, apples (X) cost $10, oranges (Y) cost $2. With X on the horizontal axis, the slope of the budget line is:', o:['−5','−1/5','−25','−10'], a:0,
+  e:'Slope = −P_x/P_y = −10/2 = −5. One apple costs five oranges. Intercepts: 5 apples or 25 oranges.'},
+ {t:'Budget line', q:'Both prices and income rise by 10%. The budget line:', o:['Does not move','Shifts out in parallel','Shifts in in parallel','Gets steeper'], a:0,
+  e:'Intercepts I/P_x and I/P_y and the slope P_x/P_y are all unchanged when everything scales by the same percentage.'},
+ {t:'Budget line', q:'Only P_x rises. With X on the horizontal axis, the budget line:', o:['Rotates inward around the Y-intercept and gets steeper','Shifts inward in parallel','Rotates inward around the X-intercept','Does not move'], a:0,
+  e:'I/P_y (the Y-intercept) is unchanged. I/P_x shrinks, so the line pivots in and |slope| = P_x/P_y grows.'},
+ {t:'Optimum', q:'At your current bundle, MU_x/P_x = 8 and MU_y/P_y = 3. You should:', o:['Buy more X and less Y','Buy more Y and less X','Stay put; you are on the budget line','Buy more of both'], a:0,
+  e:'The last dollar on X buys 8 utils and on Y only 3. Shift dollars toward X until the ratios are equal.'},
+ {t:'Optimum', q:'MRS = x/(2y) and the budget is 10x + 5y = 45. The optimal bundle is:', o:['x = 4, y = 1','x = 2, y = 5','x = 1, y = 7','x = 3, y = 3'], a:0,
+  e:'Set x/(2y) = 10/5 = 2, so x = 4y. Plug in: 40y + 5y = 45, y = 1, x = 4.'},
+ {t:'Utility', q:'You multiply someone\'s utility function by 10. Their chosen bundle:', o:['Stays the same','Moves toward the good with higher MU','Requires 10 times the income','Cannot be determined'], a:0,
+  e:'Utility is ordinal: only the ranking matters. Scaling it keeps every ranking and every MU ratio the same.'},
+ {t:'Price effects', q:'P_x rises and X is a normal good. Ordering the bundles from most X to least X:', o:['A, C, B','A, B, C','C, A, B','B, C, A'], a:0,
+  e:'A→C (substitution) reduces X. C→B (income) also reduces X because you are poorer and X is normal. So x_A > x_C > x_B.'},
+ {t:'Price effects', q:'P_x rises and X is inferior (not Giffen). Ordering from most X to least X:', o:['A, B, C','A, C, B','C, B, A','B, A, C'], a:0,
+  e:'Substitution still cuts X (A to C). The income effect raises X because being poorer increases demand for an inferior good, so B lies between: x_A > x_B > x_C. The total effect is still a decrease.'},
+ {t:'Price effects', q:'Can both goods in a two-good world be inferior?', o:['No','Yes, if income falls','Yes, if both prices rise','Only for Giffen goods'], a:0,
+  e:'If income rises and you buy less of both, you would not spend all your income. With more is better, at least one good must be normal.'},
+ {t:'Price effects', q:'The government taxes an inferior good and rebates all the revenue as a lump sum. Compared with no rebate, consumption of the good falls:', o:['By more','By less','By the same amount','It rises'], a:0,
+  e:'Without a rebate the tax makes you poorer, which raises demand for an inferior good and partly offsets the cut. The rebate removes that income effect, leaving only the substitution effect.'},
+ {t:'Applications', q:'Why does the CPI overstate the cost of living?', o:['It prices a fixed basket and ignores substitution','It includes too many goods','It uses Hicksian compensation','It adjusts for quality too much'], a:0,
+  e:'The CPI (Slutsky) asks what the old bundle costs now. People substitute away from goods that got pricier, so reaching the old utility (Hicks/PCE) costs less.'},
+ {t:'Applications', q:'P_x = P_y = $10, I = $200. P_x rises to $20. The CPI-style compensation that lets you buy your old bundle of 10X + 10Y is:', o:['$300','$250','$200','$400'], a:0,
+  e:'New cost of the old bundle: 20·10 + 10·10 = $300. The Hicks compensation in lecture was $250, so the CPI overcompensates by $50.'},
+ {t:'Applications', q:'Compared with a cash gift of equal value, an in-kind gift is:', o:['At most as good, and worse if the restriction binds','Always better because it is targeted','Always exactly as good','Better if the good is inferior'], a:0,
+  e:'Cash puts you on the full budget line. An in-kind gift creates a kinked budget line. If you would have chosen less of the gifted good, the kink binds and you lose utility (deadweight loss).'},
+ {t:'Applications', q:'At high wages the labor supply curve bends backward because:', o:['The income effect outweighs the substitution effect','The substitution effect outweighs the income effect','Leisure is an inferior good','Firms cut hours'], a:0,
+  e:'A raise makes leisure pricier (substitution: work more) but also makes you richer (income: want more leisure). At high wages the income effect wins.'},
+ {t:'Demand', q:'Each of two identical consumers has P = 30 − 2q. Market demand is:', o:['P = 30 − Q','P = 30 − 4Q','P = 60 − 2Q','P = 15 − Q'], a:0,
+  e:'Add quantities, not prices. Each: q = 15 − P/2. Market: Q = 30 − P, so P = 30 − Q. Same intercept, flatter. Half the class missed this on a past test.'},
+ {t:'Demand', q:'Demand is P = 30 − 2x and the price is $10. Consumer surplus is:', o:['$100','$200','$50','$150'], a:0,
+  e:'At P = 10, x = 10. CS is the triangle ½ · 10 · (30 − 10) = $100.'},
+ {t:'Elasticity', q:'The cross-price elasticity between X and Y is negative. X and Y are:', o:['Complements','Substitutes','Both inferior','Unrelated'], a:0,
+  e:'P_X up, Q_Y down: they are used together. Positive means substitutes.'},
+ {t:'Elasticity', q:'On a linear demand curve, a firm charging a price above the midpoint cuts its price slightly. Revenue:', o:['Rises','Falls','Stays the same','Depends on costs'], a:0,
+  e:'Above the midpoint demand is elastic (|E| > 1), so quantity rises by a larger percent than price falls. Revenue peaks at the midpoint, where |E| = 1.'},
+ {t:'Elasticity', q:'A good has a negative income elasticity. It is:', o:['Inferior','Normal','A luxury','A complement'], a:0,
+  e:'Income up, quantity down. That is why these goods are called recession-proof.'},
+ {t:'Elasticity', q:'Using the simple percent change used in this class, a price going from 2 to 3 is a change of:', o:['+50%','+40%','+33%','+0.405'], a:0,
+  e:'(3 − 2)/2 = 50%. The arc method gives 40% and the log difference gives 0.405, but the class uses simple percent change.'},
+ {t:'Economic approach', q:'Net benefit is maximized where:', o:['Marginal benefit equals marginal cost','Total benefit equals total cost','Total benefit is largest','Marginal cost is smallest'], a:0,
+  e:'MB = MC means the slopes of the total benefit and total cost curves are equal. Where the totals cross, net benefit is zero.'},
+ {t:'Economic approach', q:'You paid $80 for a concert ticket you cannot resell. On the night you feel sick. The $80 should:', o:['Not affect your decision','Push you to go so you don\'t waste it','Be added to the cost of staying home','Be split between both options'], a:0,
+  e:'It is a sunk cost. It is gone whichever you choose, so only future costs and benefits matter.'},
+ {t:'Economic approach', q:'A good that is non-rival but excludable (a streaming service) is a:', o:['Club good','Public good','Common resource','Private good'], a:0,
+  e:'Non-rival + non-excludable is public, rival + non-excludable is a common resource, rival + excludable is private.'}
+];
+// shuffle answer options once so the right answer is not always first
+function shuffle(a){ for (var i = a.length-1; i > 0; i--){ var j = Math.floor(Math.random()*(i+1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+QUIZ.forEach(function(item){
+  var right = item.o[item.a];
+  item.o = shuffle(item.o.slice()); item.a = item.o.indexOf(right);
+});
+var topics = ['All'].concat(QUIZ.map(function(x){return x.t;}).filter(function(v,i,s){return s.indexOf(v)===i;}));
+var qz = {topic:'All', order:[], i:0, right:0, seen:0, missed:[]};
+function startQuiz(topic){
+  qz.topic = topic;
+  qz.order = shuffle(QUIZ.filter(function(x){ return topic === 'All' || x.t === topic; }));
+  qz.i = 0; qz.right = 0; qz.seen = 0; qz.missed = [];
+  [].slice.call($('quizFilters').children).forEach(function(b){ b.setAttribute('aria-pressed', String(b.textContent === topic)); });
+  drawQuiz();
+}
+topics.forEach(function(t){
+  var b = document.createElement('button'); b.type = 'button'; b.textContent = t;
+  b.addEventListener('click', function(){ startQuiz(t); });
+  $('quizFilters').appendChild(b);
+});
+function esc(s){ return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/_x/g,'<sub>x</sub>').replace(/_y/g,'<sub>y</sub>').replace(/_X/g,'<sub>X</sub>').replace(/_Y/g,'<sub>Y</sub>'); }
+function drawQuiz(){
+  var card = $('quizCard');
+  if (qz.i >= qz.order.length){
+    if (qz.missed.length){
+      card.innerHTML = '<p class="done">Round done: ' + qz.right + ' of ' + qz.seen + ' right on the first try. ' + qz.missed.length + ' missed question' + (qz.missed.length>1?'s':'') + ' coming back now.</p><button class="btn" id="qRetry">Retry missed</button>';
+      $('qRetry').addEventListener('click', function(){ qz.order = shuffle(qz.missed); qz.missed = []; qz.i = 0; drawQuiz(); });
+    } else {
+      card.innerHTML = '<p class="done">All clear. Score on first attempts: ' + qz.right + ' of ' + qz.seen + '.</p><button class="btn" id="qAgain">Shuffle and go again</button>';
+      $('qAgain').addEventListener('click', function(){ startQuiz(qz.topic); });
+    }
+    $(card.querySelector('button').id).focus();
+    return;
+  }
+  var item = qz.order[qz.i];
+  card.innerHTML = '<div class="quiz-meta"><span>' + item.t + '</span><span>' + (qz.i+1) + ' of ' + qz.order.length + '</span></div>' +
+    '<p class="quiz-q">' + esc(item.q) + '</p><div class="opts">' +
+    item.o.map(function(o,k){ return '<button type="button" data-k="' + k + '">' + esc(o) + '</button>'; }).join('') + '</div><div id="qExplain"></div>';
+  var firstTry = !item._retry;
+  [].slice.call(card.querySelectorAll('.opts button')).forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var k = +btn.dataset.k, ok = k === item.a;
+      card.querySelectorAll('.opts button').forEach(function(b){ b.disabled = true; if (+b.dataset.k === item.a) b.classList.add('right'); });
+      if (!ok) btn.classList.add('wrong');
+      if (firstTry){ qz.seen++; if (ok) qz.right++; }
+      if (!ok){ item._retry = true; qz.missed.push(item); } else { item._retry = false; }
+      $('qExplain').innerHTML = '<div class="explain"><strong>' + (ok ? 'Right.' : 'Not quite.') + '</strong> ' + esc(item.e) + '</div><div class="row" style="margin-top:12px"><button class="btn" id="qNext">Next question</button></div>';
+      $('qNext').addEventListener('click', function(){ qz.i++; drawQuiz(); });
+      $('qNext').focus();
+    });
+  });
+}
+
+/* ---------- flashcards ---------- */
+var CARDS = [
+ ['Becker\'s three pillars of the economic approach','Maximizing behavior, market equilibrium, and stable preferences.'],
+ ['Opportunity cost','Explicit costs plus implicit costs (what you give up). "Free" still costs time or data.'],
+ ['Positive vs normative','Positive: testable claims about what is. Normative: value judgments about what should be.'],
+ ['Internal vs external validity','Internal: the causal estimate is right for this sample (randomization helps). External: it generalizes to other settings.'],
+ ['Budget line equation, intercepts, slope','P_x·X + P_y·Y = I. Intercepts I/P_x and I/P_y. Slope −P_x/P_y, the opportunity cost of X in units of Y.'],
+ ['Price change vs income change on the budget line','A price change rotates the line around the other intercept. An income change shifts it in parallel.'],
+ ['Rational preferences','Complete (you can rank any two bundles) and transitive (A ≥ B and B ≥ C imply A ≥ C).'],
+ ['Four properties of indifference curves','Downward sloping, never cross (transitivity), not thick (more is better), convex (averages preferred).'],
+ ['Perfect complements vs perfect substitutes','Complements: L-shaped curves (left and right shoes). Substitutes: straight lines (Coke and Pepsi).'],
+ ['MRS','The slope of the indifference curve in absolute value: MU_x / MU_y. Not MU_y / MU_x.'],
+ ['Optimality condition','MU_x/P_x = MU_y/P_y, or equivalently MRS = P_x/P_y. The indifference curve is tangent to the budget line.'],
+ ['Steps for a numerical optimum','1) Set MRS = P_x/P_y and solve for one good in terms of the other. 2) Substitute into the budget line.'],
+ ['Consumer surplus','The area between the demand curve and the price, up to the quantity bought.'],
+ ['Market demand from individual demands','Add quantities horizontally at each price. Two identical consumers give a flatter curve with the same price intercept.'],
+ ['Substitution effect','A to C: the change in quantity from the relative price change alone, holding utility at the old level (Hicksian line tangent to the old curve).'],
+ ['Income effect','C to B: the change in quantity from the loss (or gain) of purchasing power after the price change.'],
+ ['CPI vs PCE','CPI prices a fixed basket (Slutsky) and overstates inflation. PCE allows substitution (closer to Hicks). Social Security COLA uses CPI.'],
+ ['Cash vs in-kind gifts','Cash is at least as good. In-kind is worse when the kink binds, creating deadweight loss.'],
+ ['Backward-bending labor supply','Low wages: substitution effect dominates, work more. High wages: income effect dominates, work less.'],
+ ['Elasticity formula','% change in the effect divided by % change in the cause. This class uses simple percent change: (new − old)/old.'],
+ ['Elasticity of linear demand P = A − B·Q','|E| = (1/B)(P/Q). Infinite at the top, 1 at the midpoint, 0 at the bottom.'],
+ ['Revenue and elasticity','Elastic: cut price, revenue rises. Inelastic: cut price, revenue falls. Revenue is maximized where |E| = 1.'],
+ ['Cross-price and income elasticity signs','Cross-price: negative means complements, positive means substitutes. Income: positive normal, negative inferior.'],
+ ['Movement along vs shift of demand','A change in the good\'s own price moves you along the curve. Anything else (income, other prices, tastes) shifts it.']
+];
+var deck, flipped;
+function startDeck(){ deck = shuffle(CARDS.map(function(c,i){ return i; })); flipped = false; drawCard(); }
+function drawCard(){
+  var box = $('flash');
+  if (!deck.length){
+    box.innerHTML = '<div class="face"><p class="done">You worked through all ' + CARDS.length + ' cards. Come back to them tomorrow; spacing beats cramming.</p></div><div class="row"><button class="btn" id="fRestart">Start the deck again</button></div>';
+    $('fRestart').addEventListener('click', startDeck);
+    return;
+  }
+  var c = CARDS[deck[0]];
+  box.innerHTML = '<div class="quiz-meta"><span>Flashcard</span><span>' + deck.length + ' left</span></div>' +
+    '<div class="face"><p class="front">' + esc(c[0]) + '</p><p class="back" id="fBack" ' + (flipped ? '' : 'hidden') + '>' + esc(c[1]) + '</p></div>' +
+    '<div class="row" style="margin-top:14px">' + (flipped
+      ? '<button class="btn ghost" id="fAgain">Again</button><button class="btn" id="fGot">Got it</button>'
+      : '<button class="btn" id="fFlip">Show answer</button>') + '</div>';
+  if (!flipped){ $('fFlip').addEventListener('click', function(){ flipped = true; drawCard(); $('fGot').focus(); }); }
+  else {
+    $('fAgain').addEventListener('click', function(){ var c0 = deck.shift(); deck.splice(Math.min(3, deck.length), 0, c0); flipped = false; drawCard(); });
+    $('fGot').addEventListener('click', function(){ deck.shift(); flipped = false; drawCard(); });
+  }
+}
+document.addEventListener('keydown', function(e){
+  if ($('cards').hidden || e.target.tagName === 'INPUT') return;
+  if (e.key === ' ' && !flipped && $('fFlip')){ e.preventDefault(); $('fFlip').click(); }
+});
+
+/* ---------- init and theme changes ---------- */
+function redraw(){ drawChoice(); drawDemand(); }
+setPrices(1); startQuiz('All'); startDeck(); redraw();
+var mq = window.matchMedia('(prefers-color-scheme: dark)');
+(mq.addEventListener ? mq.addEventListener('change', redraw) : mq.addListener(redraw));
+})();
+</script>
+</body>
+</html>
